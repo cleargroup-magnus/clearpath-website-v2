@@ -1,4 +1,5 @@
 import { Outlet, Link, createRootRoute } from "@tanstack/react-router";
+import { ThemeProvider } from "@/components/clear/ThemeProvider";
 
 function NotFoundComponent() {
   return (
@@ -23,6 +24,10 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
-  component: () => <Outlet />,
+  component: () => (
+    <ThemeProvider>
+      <Outlet />
+    </ThemeProvider>
+  ),
   notFoundComponent: NotFoundComponent,
 });

@@ -121,7 +121,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
       {/* ── Number watermark ── */}
       <span
         aria-hidden="true"
-        className="pointer-events-none absolute right-5 top-2 select-none font-display font-bold leading-none text-navy/[0.045] transition-colors duration-300 group-hover:text-navy/[0.07]"
+        className="pointer-events-none absolute right-5 top-2 select-none font-display font-bold leading-none text-text-base/[0.06] transition-colors duration-300 group-hover:text-text-base/[0.10]"
         style={{ fontSize: 96 }}
       >
         {num}
@@ -141,7 +141,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
       </div>
 
       {/* ── Title ── */}
-      <h3 className="mb-3 text-[20px] font-semibold leading-snug tracking-tight text-navy transition-colors duration-200 group-hover:text-[color-mix(in_oklab,var(--navy)_85%,var(--blue))]">
+      <h3 className="mb-3 text-[20px] font-semibold leading-snug tracking-tight text-text-base transition-colors duration-200 group-hover:text-blue">
         {s.title}
       </h3>
 

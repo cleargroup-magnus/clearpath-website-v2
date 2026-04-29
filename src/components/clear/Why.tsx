@@ -70,14 +70,14 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
       className="group relative overflow-hidden rounded-[22px] p-8 transition-all duration-300 hover:-translate-y-1"
       style={
         {
-          background: "oklch(0.22 0.055 260)",
-          border: "1px solid oklch(0.30 0.07 260)",
+          background: "var(--why-card)",
+          border: "1px solid var(--why-card-border)",
           "--gx": "-600px",
           "--gy": "-600px",
         } as React.CSSProperties
       }
     >
-      {/* Mouse spotlight — white glow on dark */}
+      {/* Mouse spotlight */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -91,9 +91,7 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          boxShadow: "inset 0 0 0 1px oklch(0.42 0.14 260)",
-        }}
+        style={{ boxShadow: "inset 0 0 0 1px oklch(0.42 0.14 260)" }}
       />
 
       {/* Top accent line */}
@@ -101,8 +99,7 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
         aria-hidden="true"
         className="absolute left-8 right-8 top-0 h-[1.5px] rounded-full opacity-0 transition-opacity duration-500 group-hover:opacity-100"
         style={{
-          background:
-            "linear-gradient(to right, transparent, oklch(0.58 0.22 260), transparent)",
+          background: "linear-gradient(to right, transparent, oklch(0.58 0.22 260), transparent)",
         }}
       />
 
@@ -110,7 +107,7 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
       <span
         aria-hidden="true"
         className="pointer-events-none absolute right-5 top-2 select-none font-display font-bold leading-none transition-colors duration-300"
-        style={{ fontSize: 88, color: "rgba(255,255,255,0.035)" }}
+        style={{ fontSize: 88, color: "rgba(255,255,255,0.04)" }}
       >
         {num}
       </span>
@@ -147,7 +144,7 @@ export function Why() {
     <section
       id="why"
       className="px-6 py-32 md:px-[72px]"
-      style={{ background: "oklch(0.17 0.055 260)" }}
+      style={{ background: "var(--why-bg)" }}
     >
       {/* ── Section header ── */}
       <div className="mx-auto mb-20 max-w-[860px] text-center">
