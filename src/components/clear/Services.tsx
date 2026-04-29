@@ -81,15 +81,6 @@ const services: Service[] = [
   },
 ];
 
-// Bento col-span on large screens: [4,2] [2,4] [3,3]
-const lgColSpan = [
-  "lg:col-span-4",
-  "lg:col-span-2",
-  "lg:col-span-2",
-  "lg:col-span-4",
-  "lg:col-span-3",
-  "lg:col-span-3",
-];
 
 function ServiceCard({ s, index }: { s: Service; index: number }) {
   const num = String(index + 1).padStart(2, "0");
@@ -109,7 +100,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
     <article
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className={`group relative overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)] ${lgColSpan[index]}`}
+      className="group relative overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)]"
       style={
         {
           "--gx": "-600px",
@@ -178,7 +169,7 @@ export function Services() {
         sub="Six services. One team. No handoffs between agencies. The full stack of modern business growth under one roof."
       />
 
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-6">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s, i) => (
           <ServiceCard key={s.title} s={s} index={i} />
         ))}
