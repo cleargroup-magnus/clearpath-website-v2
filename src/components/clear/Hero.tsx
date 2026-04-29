@@ -1,4 +1,4 @@
-import { WorkflowAnimation } from "./WorkflowAnimation";
+import { ShaderAnimation } from "./ShaderAnimation";
 
 function ArrowIcon() {
   return (
@@ -16,84 +16,84 @@ function ArrowIcon() {
 
 export function Hero() {
   return (
-    <section className="relative flex min-h-[92vh] flex-col items-center justify-center overflow-hidden px-6 pb-12 pt-32 text-center md:px-10 lg:flex-row lg:items-center lg:justify-between lg:px-[72px] lg:pt-36 lg:text-left">
+    <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 text-center md:px-10">
 
-      {/* ── Background decorations ── */}
+      {/* ── Full-screen WebGL shader ── */}
+      <ShaderAnimation />
+
+      {/* ── Dark vignette so text stays readable ── */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0"
         style={{
           background:
-            "radial-gradient(ellipse 60% 40% at 50% 0%, color-mix(in oklab, var(--blue) 8%, transparent), transparent)",
-        }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -left-[15%] top-[5%] h-[520px] w-[520px] rounded-full opacity-90 blur-[90px] motion-safe:animate-mesh-1"
-        style={{ background: "color-mix(in oklab, var(--blue) 25%, transparent)" }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-[15%] top-[20%] h-[560px] w-[560px] rounded-full opacity-90 blur-[100px] motion-safe:animate-mesh-2"
-        style={{ background: "color-mix(in oklab, var(--navy) 25%, transparent)" }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute bottom-[-10%] left-[30%] h-[480px] w-[480px] rounded-full opacity-80 blur-[90px] motion-safe:animate-mesh-3"
-        style={{ background: "color-mix(in oklab, var(--blue-light) 25%, transparent)" }}
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, color-mix(in oklab, var(--navy) 100%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--navy) 100%, transparent) 1px, transparent 1px)",
-          backgroundSize: "72px 72px",
-          opacity: 0.07,
-          WebkitMaskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 100%)",
-          maskImage:
-            "radial-gradient(ellipse 70% 60% at 50% 50%, black 40%, transparent 100%)",
+            "radial-gradient(ellipse 80% 60% at 50% 50%, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.55) 100%)",
         }}
       />
 
-      {/* ── Left: copy ── */}
-      <div className="relative z-10 flex flex-col items-center lg:items-start lg:max-w-[600px]">
-        <h1 className="mb-8 font-display text-[clamp(44px,6.5vw,88px)] font-medium leading-none tracking-[-0.045em] text-navy">
+      {/* ── Content ── */}
+      <div className="relative z-10 flex flex-col items-center">
+        <h1 className="mb-8 max-w-[1000px] font-display text-[clamp(48px,7.5vw,100px)] font-medium leading-none tracking-[-0.045em] text-white">
           Clear direction.
           <br />
-          <span className="text-blue">Clear results.</span>
+          <span
+            style={{
+              background: "linear-gradient(135deg, #a5c8ff 0%, #7eb3ff 40%, #a0c4ff 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            Clear results.
+          </span>
         </h1>
 
-        <p className="mb-3 max-w-[540px] text-[19px] leading-[1.65] text-text-muted">
+        <p className="mb-3 max-w-[580px] text-[19px] leading-[1.65] text-white/70">
           We build, automate and scale. So you can focus on what matters.
         </p>
-        <p className="mb-12 max-w-[480px] text-[15px] text-text-light">
+        <p className="mb-12 max-w-[520px] text-[15px] text-white/45">
           Your growth partner to take you from current state to ideal state.
         </p>
 
-        <div className="flex flex-wrap items-center justify-center gap-3.5 lg:justify-start">
+        <div className="flex flex-wrap items-center justify-center gap-3.5">
           <a
             href="https://calendly.com/magnus-clearcruit/30min"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 rounded-full bg-blue px-8 py-[15px] text-[15px] font-medium text-white shadow-[0_8px_24px_color-mix(in_oklab,var(--blue)_25%,transparent)] transition-all hover:-translate-y-0.5 hover:bg-[oklch(0.5_0.22_260)] hover:shadow-[0_12px_30px_color-mix(in_oklab,var(--blue)_35%,transparent)]"
+            className="inline-flex items-center gap-2.5 rounded-full px-8 py-[15px] text-[15px] font-medium text-white transition-all hover:-translate-y-0.5"
+            style={{
+              background: "rgba(255,255,255,0.15)",
+              border: "1px solid rgba(255,255,255,0.25)",
+              backdropFilter: "blur(12px)",
+              boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+            }}
           >
             Book a discovery call
             <ArrowIcon />
           </a>
           <a
             href="#services"
-            className="inline-flex items-center gap-2.5 rounded-full border border-border-soft bg-background px-8 py-[15px] text-[15px] font-medium text-text-base transition-all hover:-translate-y-0.5 hover:border-navy"
+            className="inline-flex items-center gap-2.5 rounded-full px-8 py-[15px] text-[15px] font-medium text-white/80 transition-all hover:-translate-y-0.5"
+            style={{
+              border: "1px solid rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+            }}
           >
             See what we do
           </a>
         </div>
       </div>
 
-      {/* ── Right: 3D scene (hidden on mobile) ── */}
-      <div className="relative z-10 mt-16 hidden shrink-0 lg:mt-0 lg:block">
-        <WorkflowAnimation />
+      {/* ── Scroll hint ── */}
+      <div
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 opacity-40"
+        aria-hidden="true"
+      >
+        <span className="text-[11px] font-medium tracking-widest text-white uppercase">Scroll</span>
+        <svg width="16" height="20" viewBox="0 0 16 20" fill="none">
+          <rect x="6.5" y="0.5" width="3" height="9" rx="1.5" stroke="white" strokeWidth="1"/>
+          <path d="M8 14l-3 3h6l-3-3z" fill="white"/>
+        </svg>
       </div>
     </section>
   );
