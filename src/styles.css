@@ -254,7 +254,17 @@
   100% { transform: scale(1.8); opacity: 0; }
 }
 
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-100% / 3)); }
+}
+
+.marquee-track {
+  animation: marquee 22s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-mesh-1, .animate-mesh-2, .animate-mesh-3 { animation: none; }
   .process-line path { stroke-dashoffset: 0; animation: none; }
+  .marquee-track { animation: none; }
 }
