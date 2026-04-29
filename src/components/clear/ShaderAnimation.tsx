@@ -31,9 +31,11 @@ const fragmentShader = `
       }
     }
 
-    // Brand palette: blue/violet rings on near-black background
+    // Dark navy base + blue/violet rings
     vec3 c = clamp(color, 0.0, 1.0);
-    gl_FragColor = vec4(c[0] * 0.30, c[1] * 0.18 + c[2] * 0.12, c[2] * 0.95, 1.0);
+    vec3 base = vec3(0.05, 0.06, 0.16);
+    vec3 rings = vec3(c[0] * 0.5, c[1] * 0.35 + c[2] * 0.2, c[2] * 1.2);
+    gl_FragColor = vec4(clamp(base + rings, 0.0, 1.0), 1.0);
   }
 `;
 
