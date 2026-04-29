@@ -31,7 +31,9 @@ const fragmentShader = `
       }
     }
 
-    gl_FragColor = vec4(color[0], color[1], color[2], 1.0);
+    // Invert onto white: rings become dark-coloured lines on a white background
+    vec3 c = 1.0 - clamp(color, 0.0, 1.0) * 0.62;
+    gl_FragColor = vec4(c, 1.0);
   }
 `;
 
