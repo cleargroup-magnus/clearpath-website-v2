@@ -254,9 +254,6 @@
   100% { transform: scale(1.8); opacity: 0; }
 }
 
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-.no-scrollbar::-webkit-scrollbar { display: none; }
-
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(calc(-100% / 3)); }

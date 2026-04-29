@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SectionHead } from "./SectionHead";
 
 type Service = {
@@ -81,9 +82,21 @@ const services: Service[] = [
   },
 ];
 
-
 function ServiceCard({ s, index }: { s: Service; index: number }) {
   const num = String(index + 1).padStart(2, "0");
+  const ref = useRef<HTMLElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setVisible(true); observer.disconnect(); } },
+      { threshold: 0.12 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const onMove = (e: React.MouseEvent<HTMLElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
@@ -98,17 +111,19 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
 
   return (
     <article
+      ref={ref}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="group relative min-w-[76vw] flex-shrink-0 snap-start overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)] sm:min-w-0 sm:flex-shrink sm:snap-align-none"
-      style={
-        {
-          "--gx": "-600px",
-          "--gy": "-600px",
-        } as React.CSSProperties
-      }
+      className="group relative overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)]"
+      style={{
+        "--gx": "-600px",
+        "--gy": "-600px",
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0) scale(1)" : "translateY(36px) scale(0.97)",
+        transition: `opacity 0.55s ease ${index * 80}ms, transform 0.55s ease ${index * 80}ms`,
+      } as React.CSSProperties}
     >
-      {/* ── Mouse spotlight ── */}
+      {/* Mouse spotlight */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-0 rounded-[inherit] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
@@ -118,7 +133,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
         }}
       />
 
-      {/* ── Number watermark ── */}
+      {/* Number watermark */}
       <span
         aria-hidden="true"
         className="pointer-events-none absolute right-5 top-2 select-none font-display font-bold leading-none text-text-base/[0.06] transition-colors duration-300 group-hover:text-text-base/[0.10]"
@@ -127,7 +142,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
         {num}
       </span>
 
-      {/* ── Tag ── */}
+      {/* Tag */}
       <div className="mb-6 flex items-center justify-between">
         <span className="inline-flex items-center gap-1.5 rounded-full border border-border-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.1em] text-text-light transition-colors duration-300 group-hover:border-[color-mix(in_oklab,var(--blue)_25%,transparent)] group-hover:text-blue">
           <span className="h-1 w-1 rounded-full bg-current" />
@@ -135,22 +150,22 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
         </span>
       </div>
 
-      {/* ── Icon ── */}
+      {/* Icon */}
       <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-soft text-blue ring-1 ring-[color-mix(in_oklab,var(--blue)_15%,transparent)] transition-all duration-300 group-hover:bg-[color-mix(in_oklab,var(--blue)_12%,transparent)] group-hover:ring-[color-mix(in_oklab,var(--blue)_30%,transparent)] group-hover:shadow-[0_4px_16px_color-mix(in_oklab,var(--blue)_20%,transparent)]">
         {s.icon}
       </div>
 
-      {/* ── Title ── */}
+      {/* Title */}
       <h3 className="mb-3 text-[20px] font-semibold leading-snug tracking-tight text-text-base transition-colors duration-200 group-hover:text-blue">
         {s.title}
       </h3>
 
-      {/* ── Description ── */}
+      {/* Description */}
       <p className="relative z-10 text-[14px] leading-[1.8] text-text-muted">
         {s.desc}
       </p>
 
-      {/* ── Bottom accent line ── */}
+      {/* Bottom accent line */}
       <div
         aria-hidden="true"
         className="absolute bottom-0 left-8 right-8 h-[1.5px] rounded-full bg-gradient-to-r from-transparent via-blue to-transparent opacity-0 transition-all duration-500 group-hover:opacity-100"
@@ -161,18 +176,15 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
 
 export function Services() {
   return (
-    <section id="services" className="bg-background py-32">
-      <div className="px-6 md:px-[72px]">
-        <SectionHead
-          tag="What we do"
-          title="Clarity is"
-          accent="the strategy."
-          sub="Six services. One team. No handoffs between agencies. The full stack of modern business growth under one roof."
-        />
-      </div>
+    <section id="services" className="bg-background px-6 py-32 md:px-[72px]">
+      <SectionHead
+        tag="What we do"
+        title="Clarity is"
+        accent="the strategy."
+        sub="Six services. One team. No handoffs between agencies. The full stack of modern business growth under one roof."
+      />
 
-      {/* Mobile: horizontal snap scroll; sm+: regular grid */}
-      <div className="no-scrollbar -mx-0 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 sm:mx-auto sm:grid sm:max-w-[1280px] sm:grid-cols-2 sm:overflow-x-visible sm:px-6 sm:pb-0 lg:grid-cols-3 md:px-[72px]">
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {services.map((s, i) => (
           <ServiceCard key={s.title} s={s} index={i} />
         ))}
