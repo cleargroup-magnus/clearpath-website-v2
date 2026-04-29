@@ -100,7 +100,7 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
     <article
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="group relative overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)]"
+      className="group relative min-w-[76vw] flex-shrink-0 snap-start overflow-hidden rounded-[22px] border border-border-soft bg-background p-8 transition-all duration-300 hover:-translate-y-1.5 hover:border-[color-mix(in_oklab,var(--blue)_30%,transparent)] hover:shadow-[0_24px_56px_color-mix(in_oklab,var(--navy)_8%,transparent)] sm:min-w-0 sm:flex-shrink sm:snap-align-none"
       style={
         {
           "--gx": "-600px",
@@ -161,15 +161,18 @@ function ServiceCard({ s, index }: { s: Service; index: number }) {
 
 export function Services() {
   return (
-    <section id="services" className="bg-background px-6 py-32 md:px-[72px]">
-      <SectionHead
-        tag="What we do"
-        title="Clarity is"
-        accent="the strategy."
-        sub="Six services. One team. No handoffs between agencies. The full stack of modern business growth under one roof."
-      />
+    <section id="services" className="bg-background py-32">
+      <div className="px-6 md:px-[72px]">
+        <SectionHead
+          tag="What we do"
+          title="Clarity is"
+          accent="the strategy."
+          sub="Six services. One team. No handoffs between agencies. The full stack of modern business growth under one roof."
+        />
+      </div>
 
-      <div className="mx-auto grid max-w-[1280px] grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Mobile: horizontal snap scroll; sm+: regular grid */}
+      <div className="no-scrollbar -mx-0 flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2 sm:mx-auto sm:grid sm:max-w-[1280px] sm:grid-cols-2 sm:overflow-x-visible sm:px-6 sm:pb-0 lg:grid-cols-3 md:px-[72px]">
         {services.map((s, i) => (
           <ServiceCard key={s.title} s={s} index={i} />
         ))}
