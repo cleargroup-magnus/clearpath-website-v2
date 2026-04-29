@@ -1,4 +1,4 @@
-import { Scene3D } from "./Scene3D";
+import { WorkflowAnimation } from "./WorkflowAnimation";
 
 function ArrowIcon() {
   return (
@@ -93,7 +93,7 @@ export function Hero() {
 
       {/* ── Right: 3D scene (hidden on mobile) ── */}
       <div className="relative z-10 mt-16 hidden shrink-0 lg:mt-0 lg:block">
-        <Scene3D />
+        <WorkflowAnimation />
       </div>
     </section>
   );
