@@ -14,6 +14,7 @@ const fragmentShader = `
   precision highp float;
   uniform vec2  resolution;
   uniform float time;
+  uniform float mode; // 0.0 = dark, 1.0 = light
 
   void main(void) {
     vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
@@ -31,23 +32,29 @@ const fragmentShader = `
       }
     }
 
-    // Dark navy base + blue/violet rings
     vec3 c = clamp(color, 0.0, 1.0);
-    vec3 base = vec3(0.05, 0.06, 0.16);
-    vec3 rings = vec3(c[0] * 0.5, c[1] * 0.35 + c[2] * 0.2, c[2] * 1.2);
-    gl_FragColor = vec4(clamp(base + rings, 0.0, 1.0), 1.0);
+
+    // Dark: brand blue/navy rings on dark navy background
+    vec3 darkBase = vec3(0.05, 0.06, 0.16);
+    vec3 darkRings = vec3(c[0] * 0.5, c[1] * 0.35 + c[2] * 0.2, c[2] * 1.2);
+    vec3 darkColor = clamp(darkBase + darkRings, 0.0, 1.0);
+
+    // Light: dark rings on white background
+    vec3 lightColor = 1.0 - c * 0.62;
+
+    gl_FragColor = vec4(mix(darkColor, lightColor, mode), 1.0);
   }
 `;
 
-export function ShaderAnimation() {
+export function ShaderAnimation({ dark }: { dark: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rafRef = useRef<number>(0);
+  const uniformsRef = useRef<{ time: { value: number }; resolution: { value: THREE.Vector2 }; mode: { value: number } } | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // ── Scene setup ────────────────────────────────────────────────────────
     const camera = new THREE.Camera();
     camera.position.z = 1;
 
@@ -57,7 +64,9 @@ export function ShaderAnimation() {
     const uniforms = {
       time:       { value: 1.0 },
       resolution: { value: new THREE.Vector2() },
+      mode:       { value: dark ? 0.0 : 1.0 },
     };
+    uniformsRef.current = uniforms;
 
     const material = new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader });
     scene.add(new THREE.Mesh(geometry, material));
@@ -66,7 +75,6 @@ export function ShaderAnimation() {
     renderer.setPixelRatio(window.devicePixelRatio);
     container.appendChild(renderer.domElement);
 
-    // ── Resize ────────────────────────────────────────────────────────────
     const onResize = () => {
       const w = container.clientWidth;
       const h = container.clientHeight;
@@ -76,7 +84,6 @@ export function ShaderAnimation() {
     onResize();
     window.addEventListener("resize", onResize);
 
-    // ── Animation loop ────────────────────────────────────────────────────
     const animate = () => {
       rafRef.current = requestAnimationFrame(animate);
       uniforms.time.value += 0.05;
@@ -84,7 +91,6 @@ export function ShaderAnimation() {
     };
     animate();
 
-    // ── Cleanup ───────────────────────────────────────────────────────────
     return () => {
       cancelAnimationFrame(rafRef.current);
       window.removeEventListener("resize", onResize);
@@ -96,6 +102,26 @@ export function ShaderAnimation() {
       material.dispose();
     };
   }, []);
+
+  // Smoothly animate the mode uniform when theme changes
+  useEffect(() => {
+    if (!uniformsRef.current) return;
+    const target = dark ? 0.0 : 1.0;
+    const u = uniformsRef.current;
+    let raf: number;
+
+    const step = () => {
+      const diff = target - u.mode.value;
+      if (Math.abs(diff) < 0.005) {
+        u.mode.value = target;
+        return;
+      }
+      u.mode.value += diff * 0.06;
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [dark]);
 
   return (
     <div
