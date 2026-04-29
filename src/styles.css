@@ -198,6 +198,25 @@
 .process-line.is-visible path {
   animation: process-draw 1.8s ease-out forwards;
 }
+@keyframes globe-spin {
+  from { transform: rotateX(20deg) rotateY(0deg); }
+  to   { transform: rotateX(20deg) rotateY(360deg); }
+}
+@keyframes float-orb {
+  0%, 100% { transform: translateY(0px);   opacity: 0.55; }
+  50%       { transform: translateY(-14px); opacity: 0.9; }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.5; transform: scale(1); }
+  50%       { opacity: 0.9; transform: scale(1.12); }
+}
+@keyframes satellite-trail {
+  0%   { opacity: 0; }
+  20%  { opacity: 0.6; }
+  80%  { opacity: 0.6; }
+  100% { opacity: 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-mesh-1, .animate-mesh-2, .animate-mesh-3 { animation: none; }
   .process-line path { stroke-dashoffset: 0; animation: none; }

@@ -84,7 +84,21 @@ export function Services() {
         {services.map((s) => (
           <article
             key={s.title}
-            className="group rounded-[20px] border border-border-soft bg-background p-9 transition-all hover:-translate-y-1 hover:border-transparent hover:shadow-[0_16px_40px_color-mix(in_oklab,var(--navy)_8%,transparent)]"
+            className="rounded-[20px] border border-border-soft bg-background p-9"
+            style={{ transition: "transform 0.18s ease, box-shadow 0.2s ease" }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = (e.clientX - rect.left) / rect.width - 0.5;
+              const y = (e.clientY - rect.top) / rect.height - 0.5;
+              e.currentTarget.style.transform = `perspective(700px) rotateY(${x * 14}deg) rotateX(${-y * 14}deg) translateY(-6px) scale(1.02)`;
+              e.currentTarget.style.boxShadow = `${x * -18}px ${y * -18}px 36px color-mix(in oklab, var(--navy) 8%, transparent), 0 20px 44px color-mix(in oklab, var(--navy) 7%, transparent)`;
+              e.currentTarget.style.borderColor = "transparent";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "";
+              e.currentTarget.style.boxShadow = "";
+              e.currentTarget.style.borderColor = "";
+            }}
           >
             <div className="mb-7 flex h-11 w-11 items-center justify-center rounded-xl bg-blue-soft text-blue">
               {s.icon}
