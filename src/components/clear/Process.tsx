@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { SectionHead } from "./SectionHead";
 
 const stroke = {
@@ -58,45 +58,86 @@ const steps = [
   },
 ];
 
+/** Return the index of the step whose card midpoint is closest to `clientY`. */
+function closestStepToY(
+  stepRefs: React.MutableRefObject<(HTMLDivElement | null)[]>,
+  clientY: number,
+): number {
+  let closest = 0;
+  let closestDist = Infinity;
+  stepRefs.current.forEach((el, i) => {
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const mid = r.top + r.height / 2;
+    const dist = Math.abs(mid - clientY);
+    if (dist < closestDist) { closestDist = dist; closest = i; }
+  });
+  return closest;
+}
+
 export function Process() {
-  const [latestActive, setLatestActive] = useState(-1);
-  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const sectionRef = useRef<HTMLDivElement>(null);
+  // activeStep: which step is currently highlighted (0–3). Starts at 0.
+  const [activeStep, setActiveStep] = useState(0);
   const [sectionVisible, setSectionVisible] = useState(false);
 
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+  // Whether the mouse is currently over the section (desktop priority mode)
+  const mouseInSection = useRef(false);
+
+  // ── Section fade-in ────────────────────────────────────────────────────────
   useEffect(() => {
-    const sectionEl = sectionRef.current;
-    if (sectionEl) {
-      const obs = new IntersectionObserver(
-        ([e]) => { if (e.isIntersecting) { setSectionVisible(true); obs.disconnect(); } },
-        { threshold: 0.05 }
-      );
-      obs.observe(sectionEl);
-      return () => obs.disconnect();
-    }
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setSectionVisible(true); obs.disconnect(); } },
+      { threshold: 0.05 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
   }, []);
 
+  // ── Mobile / no-mouse: scroll-driven ──────────────────────────────────────
   useEffect(() => {
-    const observers = stepRefs.current.map((el, i) => {
-      if (!el) return null;
-      const obs = new IntersectionObserver(
-        ([e]) => {
-          if (e.isIntersecting) {
-            setLatestActive((prev) => Math.max(prev, i));
-          }
-        },
-        { threshold: 0.38 }
-      );
-      obs.observe(el);
-      return obs;
-    });
-    return () => observers.forEach((obs) => obs?.disconnect());
+    const onScroll = () => {
+      // On desktop with mouse in section, mouse wins.
+      if (mouseInSection.current) return;
+      // Only respond when section is at least partially visible.
+      const section = sectionRef.current;
+      if (!section) return;
+      const sr = section.getBoundingClientRect();
+      if (sr.bottom < 0 || sr.top > window.innerHeight) return;
+
+      const viewMid = window.innerHeight * 0.48;
+      setActiveStep(closestStepToY(stepRefs, viewMid));
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // ── Desktop: mouse-driven ─────────────────────────────────────────────────
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    setActiveStep(closestStepToY(stepRefs, e.clientY));
+  }, []);
+
+  const handleMouseEnter = useCallback(() => {
+    mouseInSection.current = true;
+  }, []);
+
+  const handleMouseLeave = useCallback(() => {
+    mouseInSection.current = false;
+    // Snap back to step 1 so there's always a sensible default when idle.
+    setActiveStep(0);
   }, []);
 
   return (
     <section
       id="process"
       ref={sectionRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       className="bg-navy px-6 py-28 md:px-[72px]"
       style={{
         opacity: sectionVisible ? 1 : 0,
@@ -116,20 +157,20 @@ export function Process() {
       {/* Journey timeline */}
       <div className="mx-auto max-w-[800px]">
         {steps.map((s, i) => {
-          const isDone = i < latestActive;
-          const isActive = i === latestActive;
-          const isPending = i > latestActive;
-          const isLast = i === steps.length - 1;
+          const isDone    = i < activeStep;
+          const isActive  = i === activeStep;
+          const isPending = i > activeStep;
+          const isLast    = i === steps.length - 1;
 
           return (
             <div key={s.n} className="flex gap-5 md:gap-7">
+
               {/* ── Left: node + spine ── */}
-              <div
-                className="flex flex-col items-center"
-                style={{ width: 52, flexShrink: 0 }}
-              >
-                {/* Node */}
-                <div className="relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full transition-all duration-500"
+              <div className="flex flex-col items-center" style={{ width: 52, flexShrink: 0 }}>
+
+                {/* Node circle */}
+                <div
+                  className="relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full"
                   style={{
                     background: isDone
                       ? "oklch(0.62 0.22 260 / 0.18)"
@@ -144,6 +185,7 @@ export function Process() {
                     boxShadow: isActive
                       ? "0 0 0 7px oklch(0.62 0.22 260 / 0.10), 0 0 24px oklch(0.62 0.22 260 / 0.30)"
                       : "none",
+                    transition: "background 0.28s ease, border-color 0.28s ease, box-shadow 0.28s ease",
                   }}
                 >
                   {isDone ? (
@@ -153,13 +195,18 @@ export function Process() {
                       <path d="M3 8l3.5 3.5L13 4" />
                     </svg>
                   ) : (
-                    <span className="font-display text-[13px] font-semibold leading-none transition-colors duration-500"
-                      style={{ color: isActive ? "white" : "oklch(0.50 0.10 260 / 0.7)" }}>
+                    <span
+                      className="font-display text-[13px] font-semibold leading-none"
+                      style={{
+                        color: isActive ? "white" : "oklch(0.50 0.10 260 / 0.7)",
+                        transition: "color 0.28s ease",
+                      }}
+                    >
                       {s.n}
                     </span>
                   )}
 
-                  {/* Ping ring — active state only */}
+                  {/* Pulse ring — active only */}
                   {isActive && (
                     <span
                       className="absolute inset-0 rounded-full"
@@ -177,13 +224,13 @@ export function Process() {
                     {/* Track */}
                     <div className="absolute inset-0"
                       style={{ background: "oklch(0.62 0.22 260 / 0.10)" }} />
-                    {/* Progressive fill */}
+                    {/* Fill — follows active step */}
                     <div
                       className="absolute inset-x-0 top-0"
                       style={{
                         background: "linear-gradient(to bottom, oklch(0.72 0.18 260), oklch(0.62 0.22 260 / 0.4))",
                         height: isDone ? "100%" : isActive ? "48%" : "0%",
-                        transition: "height 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+                        transition: "height 0.32s cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                     />
                     {/* Travelling dot — active only */}
@@ -208,7 +255,7 @@ export function Process() {
                 style={{ paddingBottom: isLast ? 0 : 28 }}
               >
                 <div
-                  className="rounded-[22px] p-6 transition-all duration-500 md:p-8"
+                  className="rounded-[22px] p-6 md:p-8"
                   style={{
                     background: isActive
                       ? "oklch(0.62 0.22 260 / 0.11)"
@@ -222,33 +269,41 @@ export function Process() {
                       : "1px solid oklch(0.62 0.22 260 / 0.07)",
                     opacity: isPending ? 0.38 : 1,
                     transform: isActive ? "translateX(3px)" : "translateX(0)",
+                    transition:
+                      "background 0.28s ease, border-color 0.28s ease, opacity 0.28s ease, transform 0.28s ease",
                   }}
                 >
                   {/* Card header */}
                   <div className="mb-4 flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div
-                        className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] transition-colors duration-500"
-                        style={{ color: isActive ? "oklch(0.72 0.18 260)" : "oklch(0.52 0.10 260 / 0.65)" }}
+                        className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em]"
+                        style={{
+                          color: isActive
+                            ? "oklch(0.72 0.18 260)"
+                            : "oklch(0.52 0.10 260 / 0.65)",
+                          transition: "color 0.28s ease",
+                        }}
                       >
                         {s.label}
                       </div>
                       <h3
-                        className="text-[19px] font-semibold leading-snug tracking-tight transition-colors duration-500 md:text-[21px]"
+                        className="text-[19px] font-semibold leading-snug tracking-tight md:text-[21px]"
                         style={{
                           color: isActive
                             ? "rgba(255,255,255,0.97)"
                             : isDone
                             ? "rgba(255,255,255,0.68)"
                             : "rgba(255,255,255,0.38)",
+                          transition: "color 0.28s ease",
                         }}
                       >
                         {s.title}
                       </h3>
                     </div>
-                    {/* Step icon */}
+                    {/* Icon */}
                     <div
-                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-500"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl"
                       style={{
                         background: isActive
                           ? "oklch(0.62 0.22 260 / 0.22)"
@@ -256,6 +311,7 @@ export function Process() {
                         color: isActive
                           ? "oklch(0.78 0.16 260)"
                           : "oklch(0.50 0.10 260 / 0.55)",
+                        transition: "background 0.28s ease, color 0.28s ease",
                       }}
                     >
                       {s.icon}
@@ -264,13 +320,14 @@ export function Process() {
 
                   {/* Description */}
                   <p
-                    className="text-[14px] leading-[1.85] transition-colors duration-500 md:text-[15px]"
+                    className="text-[14px] leading-[1.85] md:text-[15px]"
                     style={{
                       color: isActive
                         ? "rgba(255,255,255,0.58)"
                         : isDone
                         ? "rgba(255,255,255,0.38)"
                         : "rgba(255,255,255,0.22)",
+                      transition: "color 0.28s ease",
                     }}
                   >
                     {s.desc}
@@ -282,8 +339,9 @@ export function Process() {
                       maxHeight: isDone || isActive ? 48 : 0,
                       opacity: isDone || isActive ? 1 : 0,
                       overflow: "hidden",
-                      transition: "max-height 0.4s ease, opacity 0.4s ease",
                       marginTop: isDone || isActive ? 16 : 0,
+                      transition:
+                        "max-height 0.28s ease, opacity 0.28s ease, margin-top 0.28s ease",
                     }}
                   >
                     <div
@@ -298,6 +356,7 @@ export function Process() {
                         border: isActive
                           ? "1px solid oklch(0.62 0.22 260 / 0.32)"
                           : "1px solid oklch(0.62 0.22 260 / 0.14)",
+                        transition: "background 0.28s ease, color 0.28s ease, border-color 0.28s ease",
                       }}
                     >
                       <svg width="11" height="11" viewBox="0 0 16 16" fill="none"
@@ -315,13 +374,13 @@ export function Process() {
         })}
       </div>
 
-      {/* Bottom CTA strip */}
+      {/* Bottom CTA — always visible once section is in view */}
       <div
         className="mx-auto mt-16 max-w-[800px] flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between"
         style={{
-          opacity: latestActive >= 3 ? 1 : 0,
-          transform: latestActive >= 3 ? "translateY(0)" : "translateY(12px)",
-          transition: "opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s",
+          opacity: sectionVisible ? 1 : 0,
+          transform: sectionVisible ? "translateY(0)" : "translateY(12px)",
+          transition: "opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s",
         }}
       >
         <p className="text-[14px] text-white/40">
