@@ -1,51 +1,56 @@
 import { useEffect, useRef, useState } from "react";
 import { SectionHead } from "./SectionHead";
 
+const stroke = {
+  fill: "none" as const, stroke: "currentColor", strokeWidth: 1.6,
+  strokeLinecap: "round" as const, strokeLinejoin: "round" as const,
+};
+
 const steps = [
   {
     n: "01",
     title: "Intro call",
-    time: "30 min · Free · No pitch",
-    desc: "We get to know you and your business. You tell us where things are breaking or stalling. We ask the right questions. No deck, no pressure.",
+    label: "30 min · Free · No pitch",
+    desc: "We get to know your business, your goals, and what's currently blocking growth. It's a real conversation, not a pitch. By the end, we know exactly where to look.",
+    outcome: "A clear picture of where things stand.",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}>
         <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
       </svg>
     ),
   },
   {
     n: "02",
-    title: "Growth plan",
-    time: "Where to focus first",
-    desc: "We show you what's blocking growth and exactly what we'd do about it. Prioritised, scoped, and ready to act on.",
+    title: "Find the gaps",
+    label: "Where growth is being lost",
+    desc: "We audit your funnel, systems, and workflows. Missing automations, broken tracking, weak conversion points, inefficient processes. We map exactly what's costing you leads and time.",
+    outcome: "A prioritised view of what to fix first.",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-        <polyline points="14 2 14 8 20 8" />
-        <line x1="16" y1="13" x2="8" y2="13" />
-        <line x1="16" y1="17" x2="8" y2="17" />
-        <polyline points="10 9 9 9 8 9" />
+      <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}>
+        <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
       </svg>
     ),
   },
   {
     n: "03",
-    title: "Build and launch",
-    time: "Weeks, not months",
-    desc: "We build fast and get things live. New site, running campaigns, automation live. Shipped with care, not just speed.",
+    title: "Build the solution",
+    label: "Weeks, not months",
+    desc: "We build the right combination of web, automation, AI, ads, integrations, or GTM systems. Not everything at once. The highest-impact pieces first, done properly.",
+    outcome: "Built, tested, and live.",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}>
         <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
       </svg>
     ),
   },
   {
     n: "04",
-    title: "Optimise and grow",
-    time: "Ongoing partnership",
-    desc: "We stay in it with you. We keep improving what's working and cut what's not. You get a team that treats your growth as their own.",
+    title: "Launch and improve",
+    label: "Ongoing partnership",
+    desc: "We launch fast, track what's working, and keep improving. Results compound over time. We treat your growth as our own and stay accountable to the numbers.",
+    outcome: "Compounding results that improve every month.",
     icon: (
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+      <svg width="18" height="18" viewBox="0 0 24 24" {...stroke}>
         <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
         <polyline points="17 6 23 6 23 12" />
       </svg>
@@ -54,80 +59,299 @@ const steps = [
 ];
 
 export function Process() {
+  const [latestActive, setLatestActive] = useState(-1);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
+  const [sectionVisible, setSectionVisible] = useState(false);
 
   useEffect(() => {
-    const el = sectionRef.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
-      { threshold: 0.1 },
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
+    const sectionEl = sectionRef.current;
+    if (sectionEl) {
+      const obs = new IntersectionObserver(
+        ([e]) => { if (e.isIntersecting) { setSectionVisible(true); obs.disconnect(); } },
+        { threshold: 0.05 }
+      );
+      obs.observe(sectionEl);
+      return () => obs.disconnect();
+    }
+  }, []);
+
+  useEffect(() => {
+    const observers = stepRefs.current.map((el, i) => {
+      if (!el) return null;
+      const obs = new IntersectionObserver(
+        ([e]) => {
+          if (e.isIntersecting) {
+            setLatestActive((prev) => Math.max(prev, i));
+          }
+        },
+        { threshold: 0.38 }
+      );
+      obs.observe(el);
+      return obs;
+    });
+    return () => observers.forEach((obs) => obs?.disconnect());
   }, []);
 
   return (
-    <section id="process" ref={sectionRef} className="bg-navy px-6 py-28 md:px-[72px]">
+    <section
+      id="process"
+      ref={sectionRef}
+      className="bg-navy px-6 py-28 md:px-[72px]"
+      style={{
+        opacity: sectionVisible ? 1 : 0,
+        transform: sectionVisible ? "translateY(0)" : "translateY(16px)",
+        transition: "opacity 0.6s ease, transform 0.6s ease",
+      }}
+    >
+      {/* Section header */}
       <SectionHead
         variant="dark"
         tag="How it works"
-        title="From first call to"
-        accent="real results. Fast."
-        sub="A clear, tested process. You always know what's happening, what's next, and why."
+        title="From confusion"
+        accent="to clarity."
+        sub="Four steps that take you from not knowing what's broken to a business that scales."
       />
 
-      <div className="mx-auto max-w-[1280px]">
-        {/* Steps grid with connectors */}
-        <div className="relative grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Connecting line on desktop */}
-          <div aria-hidden="true" className="absolute left-0 right-0 top-[52px] hidden h-px lg:block"
-            style={{ background: "linear-gradient(to right, transparent, oklch(0.62 0.22 260 / 0.20) 15%, oklch(0.62 0.22 260 / 0.20) 85%, transparent)" }} />
+      {/* Journey timeline */}
+      <div className="mx-auto max-w-[800px]">
+        {steps.map((s, i) => {
+          const isDone = i < latestActive;
+          const isActive = i === latestActive;
+          const isPending = i > latestActive;
+          const isLast = i === steps.length - 1;
 
-          {steps.map((s, i) => (
-            <div
-              key={s.n}
-              className="relative rounded-[20px] border border-white/[0.08] bg-white/[0.03] p-7 transition-all duration-300 hover:border-blue-light/30 hover:bg-blue-light/[0.05]"
-              style={{
-                opacity: visible ? 1 : 0,
-                transform: visible ? "translateY(0)" : "translateY(24px)",
-                transition: `opacity .55s ease ${i * 100}ms, transform .55s ease ${i * 100}ms`,
-              }}
-            >
-              {/* Step icon + number */}
-              <div className="mb-5 flex items-start justify-between">
-                <div className="flex h-[42px] w-[42px] items-center justify-center rounded-xl"
-                  style={{ background: "oklch(0.62 0.22 260 / 0.15)", color: "oklch(0.72 0.18 260)" }}>
-                  {s.icon}
+          return (
+            <div key={s.n} className="flex gap-5 md:gap-7">
+              {/* ── Left: node + spine ── */}
+              <div
+                className="flex flex-col items-center"
+                style={{ width: 52, flexShrink: 0 }}
+              >
+                {/* Node */}
+                <div className="relative z-10 flex h-[52px] w-[52px] items-center justify-center rounded-full transition-all duration-500"
+                  style={{
+                    background: isDone
+                      ? "oklch(0.62 0.22 260 / 0.18)"
+                      : isActive
+                      ? "oklch(0.62 0.22 260)"
+                      : "oklch(0.28 0.06 260 / 0.6)",
+                    border: isDone
+                      ? "1.5px solid oklch(0.62 0.22 260 / 0.35)"
+                      : isActive
+                      ? "1.5px solid oklch(0.78 0.16 260)"
+                      : "1.5px solid oklch(0.40 0.08 260 / 0.4)",
+                    boxShadow: isActive
+                      ? "0 0 0 7px oklch(0.62 0.22 260 / 0.10), 0 0 24px oklch(0.62 0.22 260 / 0.30)"
+                      : "none",
+                  }}
+                >
+                  {isDone ? (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                      stroke="oklch(0.72 0.18 260)" strokeWidth="2.2"
+                      strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M3 8l3.5 3.5L13 4" />
+                    </svg>
+                  ) : (
+                    <span className="font-display text-[13px] font-semibold leading-none transition-colors duration-500"
+                      style={{ color: isActive ? "white" : "oklch(0.50 0.10 260 / 0.7)" }}>
+                      {s.n}
+                    </span>
+                  )}
+
+                  {/* Ping ring — active state only */}
+                  {isActive && (
+                    <span
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        border: "2px solid oklch(0.72 0.18 260 / 0.5)",
+                        animation: "workflow-node-ping 2.2s ease-out infinite",
+                      }}
+                    />
+                  )}
                 </div>
-                <span className="font-display text-[32px] font-medium leading-none tracking-[-0.03em] text-blue-light/40">
-                  {s.n}
-                </span>
+
+                {/* Connector spine */}
+                {!isLast && (
+                  <div className="relative mt-1 w-0.5 flex-1" style={{ minHeight: 56 }}>
+                    {/* Track */}
+                    <div className="absolute inset-0"
+                      style={{ background: "oklch(0.62 0.22 260 / 0.10)" }} />
+                    {/* Progressive fill */}
+                    <div
+                      className="absolute inset-x-0 top-0"
+                      style={{
+                        background: "linear-gradient(to bottom, oklch(0.72 0.18 260), oklch(0.62 0.22 260 / 0.4))",
+                        height: isDone ? "100%" : isActive ? "48%" : "0%",
+                        transition: "height 0.8s cubic-bezier(0.4, 0, 0.2, 1)",
+                      }}
+                    />
+                    {/* Travelling dot — active only */}
+                    {isActive && (
+                      <div
+                        className="absolute left-1/2 h-1.5 w-1.5 -translate-x-1/2 rounded-full"
+                        style={{
+                          background: "oklch(0.80 0.16 260)",
+                          boxShadow: "0 0 6px oklch(0.72 0.18 260)",
+                          animation: "processSpineDot 1.8s ease-in-out infinite",
+                        }}
+                      />
+                    )}
+                  </div>
+                )}
               </div>
 
-              <h3 className="mb-2 text-[17px] font-semibold tracking-tight text-white">
-                {s.title}
-              </h3>
-              <div className="mb-3 text-[10px] font-semibold uppercase tracking-[0.09em] text-blue-light/60">
-                {s.time}
-              </div>
-              <p className="text-[13px] leading-[1.75] text-white/50">{s.desc}</p>
+              {/* ── Right: step card ── */}
+              <div
+                ref={(el) => { stepRefs.current[i] = el; }}
+                className="flex-1"
+                style={{ paddingBottom: isLast ? 0 : 28 }}
+              >
+                <div
+                  className="rounded-[22px] p-6 transition-all duration-500 md:p-8"
+                  style={{
+                    background: isActive
+                      ? "oklch(0.62 0.22 260 / 0.11)"
+                      : isDone
+                      ? "oklch(0.62 0.22 260 / 0.05)"
+                      : "oklch(0.20 0.04 260 / 0.40)",
+                    border: isActive
+                      ? "1px solid oklch(0.62 0.22 260 / 0.38)"
+                      : isDone
+                      ? "1px solid oklch(0.62 0.22 260 / 0.14)"
+                      : "1px solid oklch(0.62 0.22 260 / 0.07)",
+                    opacity: isPending ? 0.38 : 1,
+                    transform: isActive ? "translateX(3px)" : "translateX(0)",
+                  }}
+                >
+                  {/* Card header */}
+                  <div className="mb-4 flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <div
+                        className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.11em] transition-colors duration-500"
+                        style={{ color: isActive ? "oklch(0.72 0.18 260)" : "oklch(0.52 0.10 260 / 0.65)" }}
+                      >
+                        {s.label}
+                      </div>
+                      <h3
+                        className="text-[19px] font-semibold leading-snug tracking-tight transition-colors duration-500 md:text-[21px]"
+                        style={{
+                          color: isActive
+                            ? "rgba(255,255,255,0.97)"
+                            : isDone
+                            ? "rgba(255,255,255,0.68)"
+                            : "rgba(255,255,255,0.38)",
+                        }}
+                      >
+                        {s.title}
+                      </h3>
+                    </div>
+                    {/* Step icon */}
+                    <div
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition-all duration-500"
+                      style={{
+                        background: isActive
+                          ? "oklch(0.62 0.22 260 / 0.22)"
+                          : "oklch(0.62 0.22 260 / 0.06)",
+                        color: isActive
+                          ? "oklch(0.78 0.16 260)"
+                          : "oklch(0.50 0.10 260 / 0.55)",
+                      }}
+                    >
+                      {s.icon}
+                    </div>
+                  </div>
 
-              {/* Active step dot on connector line (desktop) */}
-              <div aria-hidden="true"
-                className="absolute left-1/2 top-[52px] hidden h-2 w-2 -translate-x-1/2 -translate-y-1/2 rounded-full lg:block"
-                style={{
-                  background: "oklch(0.72 0.18 260)",
-                  boxShadow: "0 0 8px oklch(0.62 0.22 260 / 0.6)",
-                  opacity: visible ? 1 : 0,
-                  transition: `opacity .4s ease ${i * 100 + 400}ms`,
-                }}
-              />
+                  {/* Description */}
+                  <p
+                    className="text-[14px] leading-[1.85] transition-colors duration-500 md:text-[15px]"
+                    style={{
+                      color: isActive
+                        ? "rgba(255,255,255,0.58)"
+                        : isDone
+                        ? "rgba(255,255,255,0.38)"
+                        : "rgba(255,255,255,0.22)",
+                    }}
+                  >
+                    {s.desc}
+                  </p>
+
+                  {/* Outcome chip */}
+                  <div
+                    style={{
+                      maxHeight: isDone || isActive ? 48 : 0,
+                      opacity: isDone || isActive ? 1 : 0,
+                      overflow: "hidden",
+                      transition: "max-height 0.4s ease, opacity 0.4s ease",
+                      marginTop: isDone || isActive ? 16 : 0,
+                    }}
+                  >
+                    <div
+                      className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-[12px] font-medium"
+                      style={{
+                        background: isActive
+                          ? "oklch(0.62 0.22 260 / 0.18)"
+                          : "oklch(0.62 0.22 260 / 0.08)",
+                        color: isActive
+                          ? "oklch(0.80 0.16 260)"
+                          : "oklch(0.62 0.18 260 / 0.65)",
+                        border: isActive
+                          ? "1px solid oklch(0.62 0.22 260 / 0.32)"
+                          : "1px solid oklch(0.62 0.22 260 / 0.14)",
+                      }}
+                    >
+                      <svg width="11" height="11" viewBox="0 0 16 16" fill="none"
+                        stroke="currentColor" strokeWidth="2.2"
+                        strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M3 8l3.5 3.5L13 4" />
+                      </svg>
+                      {s.outcome}
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
+          );
+        })}
       </div>
+
+      {/* Bottom CTA strip */}
+      <div
+        className="mx-auto mt-16 max-w-[800px] flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between"
+        style={{
+          opacity: latestActive >= 3 ? 1 : 0,
+          transform: latestActive >= 3 ? "translateY(0)" : "translateY(12px)",
+          transition: "opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s",
+        }}
+      >
+        <p className="text-[14px] text-white/40">
+          Ready to start the journey?
+        </p>
+        <a
+          href="https://calendly.com/magnus-clearcruit/30min"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2.5 rounded-full px-6 py-3 text-[13px] font-medium text-white transition-all hover:-translate-y-px"
+          style={{
+            background: "oklch(0.52 0.22 260)",
+            boxShadow: "0 4px 20px oklch(0.52 0.22 260 / 0.35)",
+          }}
+        >
+          Book your free intro call
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </a>
+      </div>
+
+      <style>{`
+        @keyframes processSpineDot {
+          0%   { top: 0%;   opacity: 0; }
+          15%  { opacity: 1; }
+          85%  { opacity: 0.8; }
+          100% { top: 48%;  opacity: 0; }
+        }
+      `}</style>
     </section>
   );
 }
