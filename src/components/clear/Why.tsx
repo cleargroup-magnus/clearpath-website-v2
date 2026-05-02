@@ -7,24 +7,24 @@ const stroke = {
 
 const items: { title: string; desc: string; icon: ReactNode }[] = [
   {
-    title: "One team. Full ownership.",
-    desc: "No handoffs. No misalignment. One team accountable for leads, systems, and results. End to end.",
-    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>),
+    title: "You're losing leads you don't know about.",
+    desc: "Most sites and campaigns look fine on the surface but aren't built to convert. We audit your full funnel, find where visitors drop off, and fix the parts that are quietly costing you revenue.",
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M22 12h-4l-3 9L9 3l-3 9H2" /></svg>),
   },
   {
-    title: "Built for speed.",
-    desc: "You see progress in days and weeks. Not months. Small team, fast decisions, real output.",
-    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" /></svg>),
+    title: "Your team is doing work that shouldn't exist.",
+    desc: "Manual follow-ups, copy-pasted reports, tasks that fall through the cracks. We map the hours your team loses every week and replace that friction with systems that run without them.",
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" /></svg>),
   },
   {
-    title: "Focused on outcomes.",
-    desc: "Every decision is tied to leads, revenue, or efficiency. We don't sell hours. We sell results.",
-    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>),
-  },
-  {
-    title: "Everything connected.",
-    desc: "Web, ads, automation, and data working as one system. No disconnected tools, no separate vendors.",
+    title: "Your tools don't actually talk to each other.",
+    desc: "A CRM that isn't fed by your ads. Forms that don't trigger follow-ups. Data scattered across spreadsheets no one trusts. We wire your stack together so nothing falls through the cracks.",
     icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>),
+  },
+  {
+    title: "You're scaling into chaos, not out of it.",
+    desc: "More clients, more complexity, more things slipping. Growth without infrastructure just creates bigger problems. We build the foundation that lets your business grow without burning your team.",
+    icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>),
   },
 ];
 
@@ -63,7 +63,7 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
         {item.icon}
       </div>
 
-      <h4 className="mb-3 text-[19px] font-semibold leading-snug tracking-tight transition-colors duration-200"
+      <h4 className="mb-3 text-[18px] font-semibold leading-snug tracking-tight transition-colors duration-200"
         style={{ color: "rgba(255,255,255,0.92)" }}>{item.title}</h4>
       <p className="relative z-10 text-[14px] leading-[1.8]" style={{ color: "rgba(255,255,255,0.50)" }}>{item.desc}</p>
     </div>
@@ -72,19 +72,19 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
 
 export function Why() {
   return (
-    <section id="why" className="px-6 py-32 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
-      <div className="mx-auto mb-20 max-w-[860px] text-center">
+    <section id="why" className="px-6 py-28 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
+      <div className="mx-auto mb-16 max-w-[780px] text-center">
         <div className="mb-5 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: "oklch(0.72 0.15 260)" }}>
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           Why clear.group
         </div>
-        <h2 className="mb-6 font-display font-medium leading-[1.05] tracking-[-0.035em]"
-          style={{ fontSize: "clamp(40px, 5vw, 64px)", color: "rgba(255,255,255,0.95)" }}>
-          A partner,{" "}
-          <span style={{ color: "oklch(0.72 0.15 260)" }}>not a vendor.</span>
+        <h2 className="mb-5 font-display font-medium leading-[1.05] tracking-[-0.035em]"
+          style={{ fontSize: "clamp(36px, 5vw, 58px)", color: "rgba(255,255,255,0.95)" }}>
+          Most growth problems aren't{" "}
+          <span style={{ color: "oklch(0.72 0.15 260)" }}>strategy problems.</span>
         </h2>
-        <p className="mx-auto max-w-[520px] text-[17px] leading-[1.7]" style={{ color: "rgba(255,255,255,0.45)" }}>
-          For B2B, SaaS, and service companies that need structure, speed, and predictable growth.
+        <p className="mx-auto max-w-[500px] text-[16px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.45)" }}>
+          They're execution gaps. Here's what we find in almost every business we work with.
         </p>
       </div>
 
@@ -92,10 +92,10 @@ export function Why() {
         {items.map((item, i) => <WhyCard key={item.title} item={item} index={i} />)}
       </div>
 
-      <p className="mx-auto mt-20 max-w-[600px] text-center text-[15px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.28)" }}>
-        We've worked with B2B companies across SaaS, professional services, and e-commerce.{" "}
+      <p className="mx-auto mt-16 max-w-[560px] text-center text-[15px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.28)" }}>
+        We've walked into these problems across SaaS, B2B services, and e-commerce.{" "}
         <span style={{ color: "rgba(255,255,255,0.52)" }}>
-          The common thread: teams tired of agencies that didn't get it or didn't stay accountable.
+          There's always a gap between where growth should be and where it is. That gap is where we work.
         </span>
       </p>
     </section>

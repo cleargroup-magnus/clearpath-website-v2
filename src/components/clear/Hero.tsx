@@ -52,17 +52,17 @@ export function Hero() {
         </h1>
 
         <p
-          className="mb-3 max-w-[600px] text-[19px] leading-[1.65] transition-colors duration-700"
-          style={{ color: isDark ? "rgba(255,255,255,0.70)" : "var(--text-muted)" }}
+          className="mb-3 max-w-[580px] text-[19px] leading-[1.65] transition-colors duration-700"
+          style={{ color: isDark ? "rgba(255,255,255,0.85)" : "var(--text-base)" }}
         >
           More leads, better systems, faster execution.{" "}
-          <span style={{ color: isDark ? "rgba(255,255,255,0.45)" : "var(--text-light)" }}>
+          <span style={{ color: isDark ? "rgba(255,255,255,0.55)" : "var(--text-muted)" }}>
             Without managing multiple agencies.
           </span>
         </p>
         <p
           className="mb-12 max-w-[480px] text-[15px] leading-[1.7] transition-colors duration-700"
-          style={{ color: isDark ? "rgba(255,255,255,0.30)" : "var(--text-light)" }}
+          style={{ color: isDark ? "rgba(255,255,255,0.45)" : "var(--text-muted)" }}
         >
           We build, automate and scale your growth so you can focus on what matters.
         </p>

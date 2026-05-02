@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 const outcomes = [
   {
     icon: (
@@ -7,6 +9,7 @@ const outcomes = [
     ),
     title: "More qualified leads",
     desc: "Websites and campaigns built to convert visitors, not just impress them.",
+    color: "oklch(0.62 0.22 260)",
   },
   {
     icon: (
@@ -16,6 +19,7 @@ const outcomes = [
     ),
     title: "Less manual work",
     desc: "Automation that saves your team hours every week.",
+    color: "oklch(0.62 0.20 150)",
   },
   {
     icon: (
@@ -26,6 +30,7 @@ const outcomes = [
     ),
     title: "Clear visibility",
     desc: "Know what's working, what's not, and where to focus next.",
+    color: "oklch(0.65 0.20 50)",
   },
   {
     icon: (
@@ -35,12 +40,69 @@ const outcomes = [
     ),
     title: "Systems that scale",
     desc: "Build once. Improve continuously. Grow without chaos.",
+    color: "oklch(0.62 0.22 260)",
   },
 ];
 
-export function Outcomes() {
+/* Animated flow connector (SVG line that draws in on scroll) */
+function FlowArrow({ visible, delay = 0 }: { visible: boolean; delay?: number }) {
   return (
-    <section className="bg-bg-soft px-6 py-20 md:px-[72px]">
+    <div
+      aria-hidden="true"
+      className="hidden lg:flex items-center justify-center self-center"
+      style={{ width: 48, flexShrink: 0 }}
+    >
+      <svg width="48" height="16" viewBox="0 0 48 16" fill="none">
+        {/* Track line */}
+        <line x1="0" y1="8" x2="38" y2="8"
+          stroke="var(--border-soft)" strokeWidth="1.5" />
+        {/* Animated line overlay */}
+        <line x1="0" y1="8" x2="38" y2="8"
+          stroke="oklch(0.62 0.22 260)"
+          strokeWidth="1.5"
+          strokeDasharray="38"
+          strokeDashoffset={visible ? 0 : 38}
+          style={{ transition: `stroke-dashoffset .7s ease ${delay}ms` }}
+        />
+        {/* Arrowhead */}
+        <polygon
+          points="38,8 31,4.5 31,11.5"
+          fill="oklch(0.62 0.22 260)"
+          style={{
+            opacity: visible ? 0.7 : 0,
+            transition: `opacity .4s ease ${delay + 500}ms`,
+          }}
+        />
+        {/* Travelling dot */}
+        {visible && (
+          <circle r="2.5" fill="oklch(0.72 0.18 260)" opacity=".8">
+            <animateMotion dur="1.8s" begin={`${delay / 1000}s`} repeatCount="indefinite"
+              path="M 0 8 L 36 8" />
+            <animate attributeName="opacity" values="0;1;1;0" dur="1.8s" begin={`${delay / 1000}s`} repeatCount="indefinite" />
+          </circle>
+        )}
+      </svg>
+    </div>
+  );
+}
+
+export function Outcomes() {
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect(); } },
+      { threshold: 0.2 },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <section ref={sectionRef} className="bg-bg-soft px-6 py-20 md:px-[72px]">
       <div className="mx-auto max-w-[1080px]">
         <div className="mb-12 text-center">
           <h2 className="mb-3 font-display text-[clamp(24px,3vw,38px)] font-medium leading-tight tracking-tight text-text-base">
@@ -52,24 +114,50 @@ export function Outcomes() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {outcomes.map((o) => (
-            <div
-              key={o.title}
-              className="flex flex-col gap-4 rounded-[18px] border border-border-soft bg-background p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--blue)_25%,transparent)] hover:shadow-[0_12px_32px_color-mix(in_oklab,var(--navy)_6%,transparent)]"
-            >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-soft text-blue ring-1 ring-[color-mix(in_oklab,var(--blue)_15%,transparent)]">
-                {o.icon}
+        {/* Cards with flow arrows between them on desktop */}
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-stretch lg:gap-0">
+          {outcomes.map((o, i) => (
+            <div key={o.title} className="contents">
+              {/* Card */}
+              <div
+                className="flex flex-col gap-4 rounded-[18px] border border-border-soft bg-background p-6 transition-all duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--blue)_25%,transparent)] hover:shadow-[0_12px_32px_color-mix(in_oklab,var(--navy)_6%,transparent)] lg:flex-1"
+                style={{
+                  opacity: visible ? 1 : 0,
+                  transform: visible ? "translateY(0)" : "translateY(20px)",
+                  transition: `opacity .5s ease ${i * 100}ms, transform .5s ease ${i * 100}ms`,
+                }}
+              >
+                <div
+                  className="flex h-10 w-10 items-center justify-center rounded-xl ring-1"
+                  style={{
+                    background: `${o.color}18`,
+                    color: o.color,
+                    ringColor: `${o.color}20`,
+                  }}
+                >
+                  {o.icon}
+                </div>
+                <div>
+                  <h3 className="mb-1.5 text-[15px] font-semibold tracking-tight text-text-base">
+                    {o.title}
+                  </h3>
+                  <p className="text-[13px] leading-[1.7] text-text-muted">{o.desc}</p>
+                </div>
               </div>
-              <div>
-                <h3 className="mb-1.5 text-[15px] font-semibold tracking-tight text-text-base">
-                  {o.title}
-                </h3>
-                <p className="text-[13px] leading-[1.7] text-text-muted">{o.desc}</p>
-              </div>
+
+              {/* Flow arrow between cards */}
+              {i < outcomes.length - 1 && (
+                <FlowArrow visible={visible} delay={i * 100 + 400} />
+              )}
             </div>
           ))}
         </div>
+
+        {/* Pipeline label */}
+        <p className="mt-8 text-center text-[12px] font-medium uppercase tracking-[0.12em] text-text-light"
+          style={{ opacity: visible ? 0.6 : 0, transition: "opacity .6s ease .8s" }}>
+          One connected pipeline
+        </p>
       </div>
     </section>
   );

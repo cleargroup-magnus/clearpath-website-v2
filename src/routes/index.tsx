@@ -63,7 +63,6 @@ function Index() {
             </p>
             <div className="flex flex-wrap gap-3">
               {[
-                { to: "/services", label: "All services" },
                 { to: "/about", label: "About us" },
                 { to: "/contact", label: "Get in touch" },
               ].map(({ to, label }) => (
