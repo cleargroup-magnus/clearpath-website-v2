@@ -55,9 +55,9 @@ export function Hero() {
           className="mb-3 max-w-[580px] text-[19px] leading-[1.65] transition-colors duration-700"
           style={{ color: isDark ? "rgba(255,255,255,0.85)" : "var(--text-base)" }}
         >
-          More leads, better systems, faster execution.{" "}
+          Leads that convert. Systems that scale.{" "}
           <span style={{ color: isDark ? "rgba(255,255,255,0.55)" : "var(--text-muted)" }}>
-            Without managing multiple agencies.
+            Results that speak for themselves.
           </span>
         </p>
         <p
