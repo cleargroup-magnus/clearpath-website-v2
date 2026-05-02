@@ -24,11 +24,28 @@ export function CTA() {
           Get started
         </div>
         <h2 className="relative z-10 mx-auto mb-6 max-w-[680px] font-display text-[clamp(40px,5vw,60px)] font-medium leading-[1.05] tracking-[-0.035em] text-white">
-          Stop guessing. <span className="text-blue-light">Start growing.</span>
+          Get a clear plan{" "}
+          <span className="text-blue-light">for your growth.</span>
         </h2>
-        <p className="relative z-10 mx-auto mb-10 max-w-[520px] text-[18px] leading-[1.65] text-white/60">
-          One conversation is all it takes to get a clear picture of what's possible for your business.
+        <p className="relative z-10 mx-auto mb-8 max-w-[480px] text-[18px] leading-[1.65] text-white/60">
+          One conversation is all it takes to understand what to fix, improve, and prioritise.
         </p>
+
+        <ul className="relative z-10 mx-auto mb-10 max-w-[360px] space-y-2.5 text-left">
+          {[
+            "A clear view of your bottlenecks",
+            "Where you're losing time or revenue",
+            "Practical next steps — no fluff",
+          ].map((item) => (
+            <li key={item} className="flex items-start gap-2.5 text-[15px] text-white/65">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-blue-light">
+                <path d="M3 8l3.5 3.5L13 4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {item}
+            </li>
+          ))}
+        </ul>
+
         <a
           href="https://calendly.com/magnus-clearcruit/30min"
           target="_blank"
@@ -40,13 +57,13 @@ export function CTA() {
             <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </a>
-        <p className="relative z-10 mt-6 text-[14px] text-white/50">
-          Or email{" "}
+        <p className="relative z-10 mt-5 text-[13px] text-white/40">
+          No pressure. No commitment.{" "}
           <a
             href="mailto:magnus@clearcruit.com"
-            className="text-white/80 underline decoration-white/30 underline-offset-4 transition-colors hover:text-blue-light"
+            className="text-white/60 underline decoration-white/20 underline-offset-4 transition-colors hover:text-blue-light"
           >
-            magnus@clearcruit.com
+            Or email us instead.
           </a>
         </p>
       </div>

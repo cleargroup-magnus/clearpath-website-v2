@@ -6,6 +6,7 @@ import { TrustBar } from "@/components/clear/TrustBar";
 import { Services } from "@/components/clear/Services";
 import { Process } from "@/components/clear/Process";
 import { Why } from "@/components/clear/Why";
+import { Outcomes } from "@/components/clear/Outcomes";
 import { CTA } from "@/components/clear/CTA";
 import { Footer } from "@/components/clear/Footer";
 
@@ -36,19 +37,22 @@ function Index() {
         {/* 2 — What we do (marquee strip) */}
         <TrustBar />
 
-        {/* 3 — Services */}
+        {/* 3 — Outcomes */}
+        <Outcomes />
+
+        {/* 4 — Services */}
         <SectionLabel>What we do</SectionLabel>
         <Services />
 
-        {/* 4 — How it works */}
+        {/* 5 — How it works */}
         <SectionLabel>How it works</SectionLabel>
         <Process />
 
-        {/* 5 — Why us */}
+        {/* 6 — Why us */}
         <SectionLabel>Why clear.group</SectionLabel>
         <Why />
 
-        {/* 6 — CTA */}
+        {/* 7 — CTA */}
         <CTA />
 
         {/* Quick-nav to pages */}

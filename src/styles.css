@@ -255,35 +255,107 @@
 }
 
 /* ── Card flip back-face animations ─────────────────────────────────── */
+
+/* Generic utilities */
 @keyframes card-fade-up {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes card-bar-rise {
-  from { transform: scaleY(0); }
-  to   { transform: scaleY(1); }
-}
-@keyframes card-pulse-dot {
-  0%, 100% { opacity: 0.3; transform: scale(0.8); }
-  50%      { opacity: 1;   transform: scale(1.3); }
-}
-@keyframes card-draw-line {
-  from { stroke-dashoffset: 200; }
-  to   { stroke-dashoffset: 0; }
-}
-@keyframes card-chart-line {
-  from { stroke-dashoffset: 500; }
-  to   { stroke-dashoffset: 0; }
 }
 @keyframes card-node-in {
   from { opacity: 0; transform: scale(0); }
   to   { opacity: 1; transform: scale(1); }
 }
-@keyframes card-travel {
-  0%   { opacity: 0; transform: translateX(0); }
+@keyframes card-draw-line {
+  from { stroke-dashoffset: 200; }
+  to   { stroke-dashoffset: 0; }
+}
+
+/* Web Dev — elements build in, hold, fade, loop (5s cycle) */
+@keyframes webdev-loop {
+  0%, 2%   { opacity: 0; transform: translateY(5px); }
+  18%, 72% { opacity: 1; transform: translateY(0); }
+  88%, 100%{ opacity: 0; transform: translateY(0); }
+}
+/* Web Dev — wireframe fills in (border → filled) */
+@keyframes webdev-fill {
+  0%, 25%   { background: transparent; }
+  50%, 80%  { background: oklch(0.62 0.22 260 / 0.15); }
+  95%, 100% { background: transparent; }
+}
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+/* AI — neural pulse at center */
+@keyframes ai-pulse {
+  0%, 100% { r: 8; opacity: 0.6; }
+  50%      { r: 11; opacity: 1; }
+}
+@keyframes ai-pulse-ring {
+  0%   { r: 12; opacity: 0.4; }
+  100% { r: 22; opacity: 0; }
+}
+/* AI chat loop */
+@keyframes chat-loop {
+  0%, 3%   { opacity: 0; transform: translateY(6px) scale(0.92); }
+  18%, 72% { opacity: 1; transform: translateY(0) scale(1); }
+  87%, 100%{ opacity: 0; transform: translateY(0) scale(1); }
+}
+@keyframes card-pulse-dot {
+  0%, 100% { opacity: 0.3; transform: scale(0.8); }
+  50%      { opacity: 1;   transform: scale(1.3); }
+}
+
+/* Automation — circular orbit */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(28px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(28px) rotate(-360deg); }
+}
+@keyframes orbit-reverse {
+  from { transform: rotate(0deg) translateX(28px) rotate(0deg); }
+  to   { transform: rotate(-360deg) translateX(28px) rotate(360deg); }
+}
+@keyframes gear-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Integration — pulse along line */
+@keyframes line-pulse {
+  0%   { stroke-dashoffset: 60; opacity: 0; }
   10%  { opacity: 1; }
   90%  { opacity: 1; }
-  100% { opacity: 0; transform: translateX(var(--travel-x, 80px)); }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* Ads — bar rise + counter */
+@keyframes card-bar-rise {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+@keyframes metric-count {
+  0%   { opacity: 0; transform: translateY(4px); }
+  15%, 85% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-4px); }
+}
+@keyframes live-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.4; transform: scale(0.85); }
+}
+
+/* GTM — chart draw + area fade */
+@keyframes card-chart-line {
+  from { stroke-dashoffset: 500; }
+  to   { stroke-dashoffset: 0; }
+}
+@keyframes gtm-dot-in {
+  0%, 100% { opacity: 0; transform: scale(0); }
+  20%, 80% { opacity: 1; transform: scale(1); }
+}
+@keyframes funnel-fill {
+  from { opacity: 0; }
+  to   { opacity: 0.08; }
 }
 
 @keyframes marquee {
