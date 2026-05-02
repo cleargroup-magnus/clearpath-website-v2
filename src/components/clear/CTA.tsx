@@ -35,7 +35,7 @@ export function CTA() {
           {[
             "A clear view of your bottlenecks",
             "Where you're losing time or revenue",
-            "Practical next steps — no fluff",
+            "Practical next steps with no fluff",
           ].map((item) => (
             <li key={item} className="flex items-start gap-2.5 text-[15px] text-white/65">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" className="mt-0.5 shrink-0 text-blue-light">

@@ -97,7 +97,7 @@ function ContactPage() {
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
               {[
                 { n: "01", title: "Discovery call", desc: "30 min. No pitch. Just an honest conversation about where you are and where you want to be." },
-                { n: "02", title: "Growth audit", desc: "We map your stack, marketing, and ops — and show you exactly where the biggest impact is." },
+                { n: "02", title: "Growth audit", desc: "We map your stack, marketing, and ops. Then show you exactly where the biggest impact is." },
                 { n: "03", title: "Clear proposal", desc: "A scoped plan with timeline and pricing. No ambiguity, no surprises." },
               ].map((s) => (
                 <div key={s.n} className="flex flex-col gap-2">

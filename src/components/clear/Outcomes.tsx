@@ -6,7 +6,7 @@ const outcomes = [
       </svg>
     ),
     title: "More qualified leads",
-    desc: "Websites and campaigns designed to convert — not just look good.",
+    desc: "Websites and campaigns built to convert visitors, not just impress them.",
   },
   {
     icon: (

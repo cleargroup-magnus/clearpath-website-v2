@@ -28,7 +28,7 @@ function ServicesPage() {
               <span className="text-blue">to grow.</span>
             </h1>
             <p className="mx-auto max-w-[520px] text-[18px] leading-[1.7] text-text-muted">
-              Six focused services. One team. Built to compound — not just deliver.
+              Six focused services. One team. Built for compounding results, not one-off deliverables.
             </p>
           </div>
         </section>

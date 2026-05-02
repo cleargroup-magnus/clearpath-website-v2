@@ -55,16 +55,16 @@ export function Hero() {
           className="mb-3 max-w-[600px] text-[19px] leading-[1.65] transition-colors duration-700"
           style={{ color: isDark ? "rgba(255,255,255,0.70)" : "var(--text-muted)" }}
         >
-          More leads, better systems, faster execution —{" "}
+          More leads, better systems, faster execution.{" "}
           <span style={{ color: isDark ? "rgba(255,255,255,0.45)" : "var(--text-light)" }}>
-            without managing multiple agencies.
+            Without managing multiple agencies.
           </span>
         </p>
         <p
           className="mb-12 max-w-[480px] text-[15px] leading-[1.7] transition-colors duration-700"
           style={{ color: isDark ? "rgba(255,255,255,0.30)" : "var(--text-light)" }}
         >
-          We build, automate and scale your growth — so you can focus on what matters.
+          We build, automate and scale your growth so you can focus on what matters.
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3.5">

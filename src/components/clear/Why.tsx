@@ -8,22 +8,22 @@ const stroke = {
 const items: { title: string; desc: string; icon: ReactNode }[] = [
   {
     title: "One team. Full ownership.",
-    desc: "No handoffs. No misalignment. One team accountable for leads, systems, and results — end to end.",
+    desc: "No handoffs. No misalignment. One team accountable for leads, systems, and results. End to end.",
     icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" /></svg>),
   },
   {
     title: "Built for speed.",
-    desc: "You see progress in days and weeks — not months. Small team, fast decisions, real output.",
+    desc: "You see progress in days and weeks. Not months. Small team, fast decisions, real output.",
     icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" /></svg>),
   },
   {
     title: "Focused on outcomes.",
-    desc: "Every decision is tied to leads, revenue, or efficiency. We don't sell hours — we sell results.",
+    desc: "Every decision is tied to leads, revenue, or efficiency. We don't sell hours. We sell results.",
     icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" /></svg>),
   },
   {
     title: "Everything connected.",
-    desc: "Web, ads, automation, and data working as one system — not disconnected tools from separate vendors.",
+    desc: "Web, ads, automation, and data working as one system. No disconnected tools, no separate vendors.",
     icon: (<svg width="20" height="20" viewBox="0 0 24 24" {...stroke}><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>),
   },
 ];
@@ -95,7 +95,7 @@ export function Why() {
       <p className="mx-auto mt-20 max-w-[600px] text-center text-[15px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.28)" }}>
         We've worked with B2B companies across SaaS, professional services, and e-commerce.{" "}
         <span style={{ color: "rgba(255,255,255,0.52)" }}>
-          The common thread: teams tired of agencies that didn't get it — or didn't stay accountable.
+          The common thread: teams tired of agencies that didn't get it or didn't stay accountable.
         </span>
       </p>
     </section>

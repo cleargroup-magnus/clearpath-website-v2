@@ -5,7 +5,7 @@ const steps = [
     n: "01",
     title: "Discovery call",
     time: "30 min · Free · No pitch",
-    desc: "You get clarity on your current setup and biggest opportunities. No sales deck, no pressure — just an honest conversation.",
+    desc: "You get clarity on your current setup and biggest opportunities. No sales deck, no pressure. Just an honest conversation.",
   },
   {
     n: "02",
@@ -17,7 +17,7 @@ const steps = [
     n: "03",
     title: "Build & launch",
     time: "Weeks, not months",
-    desc: "We execute fast and get everything live. New site, campaign, automation — shipped with precision.",
+    desc: "We execute fast and get everything live. New site, campaign, automation. All shipped with precision.",
   },
   {
     n: "04",
@@ -34,7 +34,7 @@ export function Process() {
         variant="dark"
         tag="How it works"
         title="From first call to"
-        accent="real results — fast."
+        accent="real results. Fast."
         sub="No guesswork. No wasted months. A clear, tested process from first conversation to ongoing growth."
       />
       <div className="relative mx-auto max-w-[1280px]">

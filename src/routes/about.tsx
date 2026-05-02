@@ -64,7 +64,7 @@ function AboutPage() {
                 A small team with a big focus.
               </h2>
               <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
-                clear.group is a B2B growth partner for companies that are serious about scaling. We're not a big agency — we're a focused team that moves fast, thinks clearly, and builds things that last.
+                clear.group is a B2B growth partner for companies that are serious about scaling. We're not a big agency. We're a focused team that moves fast, thinks clearly, and builds things that last.
               </p>
               <p className="text-[16px] leading-[1.8] text-text-muted">
                 We've worked with SaaS, professional services, and e-commerce companies across Europe and beyond. The common thread: teams that were tired of agencies that didn't get it.
