@@ -229,109 +229,143 @@ export function WebDevAnim({ active }: { active: boolean }) {
 /* ─────────────────────────── Systems Integration ────────────────────── */
 /* Scattered tools → Connected → Data flowing                              */
 export function IntegrationAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 2000, 2200, 2800);
+  const phase = usePhase(active, 1000, 1100, 1400);  // ~2× faster
 
-  // 6 nodes in hexagonal ring
   const nodes = [
-    { label: "HubSpot",   cx: 150, cy: 24  },
-    { label: "Website",   cx: 258, cy: 85  },
-    { label: "Forms",     cx: 258, cy: 140 },
-    { label: "Email",     cx: 150, cy: 178 },
-    { label: "Analytics", cx: 42,  cy: 140 },
-    { label: "Calendar",  cx: 42,  cy: 85  },
+    { label: "CRM",       cx: 150, cy: 24,  icon: "crm"      },
+    { label: "Website",   cx: 258, cy: 85,  icon: "website"  },
+    { label: "Forms",     cx: 258, cy: 140, icon: "forms"    },
+    { label: "Email",     cx: 150, cy: 178, icon: "email"    },
+    { label: "Analytics", cx: 42,  cy: 140, icon: "analytics"},
+    { label: "Calendar",  cx: 42,  cy: 85,  icon: "calendar" },
   ];
 
-  // Adjacent connections (hex ring)
-  const edges = [
-    [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 0],
-  ];
+  const edges = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,0]];
 
   const pathD = (a: typeof nodes[0], b: typeof nodes[0]) =>
     `M ${a.cx} ${a.cy} L ${b.cx} ${b.cy}`;
 
-  const lineDash = (a: typeof nodes[0], b: typeof nodes[0]) => {
-    const dx = b.cx - a.cx;
-    const dy = b.cy - a.cy;
+  const edgeLen = (a: typeof nodes[0], b: typeof nodes[0]) => {
+    const dx = b.cx - a.cx, dy = b.cy - a.cy;
     return Math.sqrt(dx * dx + dy * dy);
   };
 
+  const connected = phase >= 1;
+  const flowing   = phase === 2;
+  const NR = 25;  // node radius (up from 18, ~40% larger)
+
   return (
-    <div style={{ width: "100%", maxWidth: 300 }}>
-      <svg viewBox="0 0 300 200" style={{ width: "100%", display: "block", overflow: "visible" }}>
-        {/* Connection lines */}
+    <div style={{ width: "100%", maxWidth: 310 }}>
+      <svg viewBox="0 0 300 202" style={{ width: "100%", display: "block", overflow: "visible" }}>
+
+        {/* ── Connection lines ── */}
         {edges.map(([ai, bi], i) => {
-          const a = nodes[ai];
-          const b = nodes[bi];
-          const len = lineDash(a, b);
+          const a = nodes[ai], b = nodes[bi];
+          const len = edgeLen(a, b);
           return (
             <line key={i}
               x1={a.cx} y1={a.cy} x2={b.cx} y2={b.cy}
-              stroke={phase === 2 ? G : B}
+              stroke={flowing ? G : B}
               strokeWidth="1.5"
               strokeDasharray={len}
-              strokeDashoffset={phase >= 1 ? 0 : len}
-              strokeOpacity={phase >= 1 ? 0.5 : 0}
-              style={{
-                transition: `stroke-dashoffset .6s ease ${i * 0.12}s, stroke-opacity .5s ease ${i * 0.12}s, stroke .4s ease`,
-              }}
+              strokeDashoffset={connected ? 0 : len}
+              strokeOpacity={connected ? 0.5 : 0}
+              style={{ transition: `stroke-dashoffset .3s ease ${i * 0.06}s, stroke-opacity .25s ease ${i * 0.06}s, stroke .2s ease` }}
             />
           );
         })}
 
-        {/* Data dots — phase 2 */}
-        {phase === 2 && edges.map(([ai, bi], i) => {
-          const a = nodes[ai];
-          const b = nodes[bi];
+        {/* ── Data dots — phase 2 ── */}
+        {flowing && edges.map(([ai, bi], i) => {
+          const a = nodes[ai], b = nodes[bi];
           return (
             <circle key={i} r="3.5" fill={BL}>
-              <animateMotion
-                dur="2.4s"
-                begin={`${i * 0.4}s`}
-                repeatCount="indefinite"
-                path={pathD(a, b)}
-              />
-              <animate attributeName="opacity" values="0;1;1;0" dur="2.4s" begin={`${i * 0.4}s`} repeatCount="indefinite" />
+              <animateMotion dur="1.2s" begin={`${i * 0.2}s`} repeatCount="indefinite" path={pathD(a, b)} />
+              <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin={`${i * 0.2}s`} repeatCount="indefinite" />
             </circle>
           );
         })}
 
-        {/* Nodes */}
+        {/* ── Nodes ── */}
         {nodes.map((n, i) => {
-          const glowing = phase === 2;
+          const ix = n.cx;
+          const iy = n.cy - 7;   // icon centre (upper half of circle)
+          const ty = n.cy + 16;  // text baseline (lower half, clear of icon)
+
+          // Shared icon colour + transition helpers
+          const ic  = connected ? BL : "rgba(255,255,255,0.32)";
+          const icS: React.CSSProperties = { transition: `stroke .25s ease ${i * 0.05}s` };
+          const icF: React.CSSProperties = { transition: `fill   .25s ease ${i * 0.05}s` };
+
           return (
             <g key={n.label}>
-              {/* Glow ring — phase 2 */}
-              <circle cx={n.cx} cy={n.cy} r="22"
-                fill="none"
-                stroke={glowing ? B : "transparent"}
-                strokeWidth="1"
-                strokeOpacity={glowing ? 0.35 : 0}
-                style={{ transition: `stroke-opacity .5s ease ${i * 0.1}s` }}
-              />
-              <circle cx={n.cx} cy={n.cy} r="18"
-                fill={glowing ? B + "18" : "rgba(255,255,255,0.05)"}
-                stroke={glowing ? B : "rgba(255,255,255,0.18)"}
+
+              {/* Node circle — no glow ring, clean edge */}
+              <circle cx={n.cx} cy={n.cy} r={NR}
+                fill={connected ? B + "18" : "rgba(255,255,255,0.05)"}
+                stroke={connected ? B : "rgba(255,255,255,0.18)"}
                 strokeWidth="1.2"
-                style={{ transition: `all .5s ease ${i * 0.1}s` }}
+                style={{ transition: `all .25s ease ${i * 0.05}s` }}
               />
-              <text x={n.cx} y={n.cy + 3.5} textAnchor="middle" fontSize="7.5"
-                fontFamily="Inter, sans-serif" fontWeight="600"
-                fill={glowing ? BL : "rgba(255,255,255,0.38)"}
-                style={{ transition: `fill .5s ease ${i * 0.1}s` }}>
+
+              {/* ── Icon (14px tall, centred at iy) ── */}
+              {n.icon === "crm" && (
+                <g fill="none" stroke={ic} strokeWidth="1.4" strokeLinecap="round" style={icS}>
+                  <ellipse cx={ix} cy={iy - 3} rx="6.5" ry="2.2" />
+                  <line x1={ix - 6.5} y1={iy - 3} x2={ix - 6.5} y2={iy + 3} />
+                  <line x1={ix + 6.5} y1={iy - 3} x2={ix + 6.5} y2={iy + 3} />
+                  <ellipse cx={ix} cy={iy + 3} rx="6.5" ry="2.2" />
+                </g>
+              )}
+              {n.icon === "website" && (
+                <g fill="none" stroke={ic} strokeWidth="1.4" strokeLinecap="round" style={icS}>
+                  <rect x={ix - 8} y={iy - 6} width="16" height="12" rx="2" />
+                  <line x1={ix - 8} y1={iy - 2} x2={ix + 8} y2={iy - 2} />
+                  {/* Traffic-light dot in title bar */}
+                  <circle cx={ix - 5} cy={iy - 4} r="1.3" fill={ic} stroke="none" />
+                </g>
+              )}
+              {n.icon === "forms" && (
+                <g fill="none" stroke={ic} strokeWidth="1.4" strokeLinecap="round" style={icS}>
+                  <rect x={ix - 7} y={iy - 6} width="14" height="12" rx="2" />
+                  <line x1={ix - 4} y1={iy - 2} x2={ix + 4} y2={iy - 2} />
+                  <line x1={ix - 4} y1={iy + 2} x2={ix + 1.5} y2={iy + 2} />
+                </g>
+              )}
+              {n.icon === "email" && (
+                <g fill="none" stroke={ic} strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" style={icS}>
+                  <rect x={ix - 7.5} y={iy - 5} width="15" height="10" rx="1.5" />
+                  <path d={`M ${ix - 7.5} ${iy - 5} L ${ix} ${iy + 1} L ${ix + 7.5} ${iy - 5}`} />
+                </g>
+              )}
+              {n.icon === "analytics" && (
+                <g fill={ic} style={icF}>
+                  <rect x={ix - 7} y={iy + 1} width="4" height="5" rx="1" />
+                  <rect x={ix - 2} y={iy - 3} width="4" height="9" rx="1" />
+                  <rect x={ix + 3} y={iy - 7} width="4" height="13" rx="1" />
+                </g>
+              )}
+              {n.icon === "calendar" && (
+                <g fill="none" stroke={ic} strokeWidth="1.4" strokeLinecap="round" style={icS}>
+                  <rect x={ix - 7} y={iy - 4} width="14" height="11" rx="2" />
+                  <line x1={ix - 7} y1={iy} x2={ix + 7} y2={iy} />
+                  <line x1={ix - 3} y1={iy - 6} x2={ix - 3} y2={iy - 2} />
+                  <line x1={ix + 3} y1={iy - 6} x2={ix + 3} y2={iy - 2} />
+                </g>
+              )}
+
+              {/* ── Label — single text element, no duplicates ── */}
+              <text x={n.cx} y={ty} textAnchor="middle"
+                fontSize="7.5" fontFamily="Inter, sans-serif" fontWeight="600"
+                fill={flowing ? "rgba(255,255,255,0.92)" : connected ? "rgba(255,255,255,0.60)" : "rgba(255,255,255,0.28)"}
+                style={{ transition: `fill .25s ease ${i * 0.05}s` }}>
                 {n.label}
               </text>
-              {/* Label below for longer names */}
-              {n.label.length > 6 && (
-                <text x={n.cx} y={n.cy + 3.5} textAnchor="middle" fontSize="6.5"
-                  fontFamily="Inter, sans-serif" fontWeight="600"
-                  fill={glowing ? BL : "rgba(255,255,255,0.38)"}
-                  style={{ transition: `fill .5s ease ${i * 0.1}s` }}>
-                  {n.label}
-                </text>
-              )}
+
             </g>
           );
         })}
+
       </svg>
 
       <div style={{ marginTop: 6 }}>
