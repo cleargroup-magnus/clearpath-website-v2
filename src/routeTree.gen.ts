@@ -4,7 +4,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ServicesRouteImport } from './routes/services'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as ServicesWebDevRouteImport } from './routes/services/web-development'
@@ -17,12 +16,6 @@ import { Route as ServicesGTMRouteImport } from './routes/services/gtm-engineeri
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-
-const ServicesRoute = ServicesRouteImport.update({
-  id: '/services',
-  path: '/services',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -76,7 +69,6 @@ const ServicesGTMRoute = ServicesGTMRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/services': typeof ServicesRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/web-development': typeof ServicesWebDevRoute
@@ -88,7 +80,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/services': typeof ServicesRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/web-development': typeof ServicesWebDevRoute
@@ -101,7 +92,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/services': typeof ServicesRoute
   '/about': typeof AboutRoute
   '/contact': typeof ContactRoute
   '/services/web-development': typeof ServicesWebDevRoute
@@ -113,15 +103,14 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/services' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
+  fullPaths: '/' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/services' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
-  id: '__root__' | '/' | '/services' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
+  to: '/' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
+  id: '__root__' | '/' | '/about' | '/contact' | '/services/web-development' | '/services/ai-integration' | '/services/process-automation' | '/services/systems-integration' | '/services/meta-google-ads' | '/services/gtm-engineering'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  ServicesRoute: typeof ServicesRoute
   AboutRoute: typeof AboutRoute
   ContactRoute: typeof ContactRoute
   ServicesWebDevRoute: typeof ServicesWebDevRoute
@@ -139,13 +128,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/services': {
-      id: '/services'
-      path: '/services'
-      fullPath: '/services'
-      preLoaderRoute: typeof ServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -209,7 +191,6 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute,
-  ServicesRoute,
   AboutRoute,
   ContactRoute,
   ServicesWebDevRoute,
