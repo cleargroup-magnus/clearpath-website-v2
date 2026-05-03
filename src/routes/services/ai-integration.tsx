@@ -70,12 +70,12 @@ function AIIntegrationPage() {
                   desc: "There are hundreds of AI tools. Without a clear picture of your workflows and bottlenecks, you are guessing. Most experiments fail because they start with the tool, not the problem.",
                 },
                 {
-                  title: "Implemented but not adopted",
-                  desc: "AI tools that your team ignores save no one any time. Adoption requires fit, training, and integration with how people already work.",
+                  title: "AI tools your team actually uses",
+                  desc: "Most AI projects fail after implementation. Not because the tech is bad, but because no one uses it. We focus on tools that fit your workflows, your team, and your day-to-day operations so adoption happens naturally.",
                 },
                 {
-                  title: "Low-value use cases",
-                  desc: "Most companies start with AI for content or summaries. The real value is in operational workflows, support, and data processing where AI can run without supervision.",
+                  title: "AI applied where it actually matters",
+                  desc: "Most companies implement AI in the wrong places for their business. Not because it is useless, but because it is not aligned with their real bottlenecks. We focus on using AI where it creates real impact.",
                 },
               ].map((p) => (
                 <div key={p.title} className="rounded-[18px] border border-border-soft bg-bg-soft p-6">
