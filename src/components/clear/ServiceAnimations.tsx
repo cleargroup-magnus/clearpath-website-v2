@@ -47,13 +47,13 @@ export function PhaseBar({ phase, labels }: { phase: number; labels: [string, st
 /* ─────────────────────────── Web Development ────────────────────────── */
 /* wireframe → designed → live                                             */
 export function WebDevAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 2400, 2000, 2200);
+  const phase = usePhase(active, 1500, 1200, 1400);
 
   const built = phase >= 1;
   const live  = phase === 2;
 
   return (
-    <div style={{ width: "100%", maxWidth: 320 }}>
+    <div style={{ width: "100%", maxWidth: 400 }}>
       <svg viewBox="0 0 320 210" style={{ width: "100%", display: "block" }}>
         {/* Browser chrome */}
         <rect x="0" y="0" width="320" height="210" rx="12"
