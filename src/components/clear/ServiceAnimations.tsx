@@ -519,69 +519,61 @@ export function AIAnim({ active }: { active: boolean }) {
 }
 
 /* ─────────────────────────── Process Automation ─────────────────────── */
-/* n8n-style canvas: Idle → Wiring Up → Running                            */
+/* n8n dark canvas: Idle → Wiring Up → Running (6-node branching workflow) */
 export function AutomationAnim({ active }: { active: boolean }) {
   const phase = usePhase(active, 1400, 1000, 1700);
 
   const built   = phase >= 1;
   const running = phase === 2;
 
-  const NW = 100; // node width
+  const NW = 108; // node width
   const NH = 44;  // node height
 
-  // Node definitions — x/y = top-left corner
+  // 6-node branching layout:
+  //   [Webhook] → [IF/Else] → [AI Enrich] → [HubSpot]
+  //                        ↘  [Slack]     → [Dashboard]
   const nodes = [
-    { id: "webhook", x: 8,   y: 40,  label: "Webhook",      sub: "Trigger",    color: "#E8504A", icon: "bolt"   },
-    { id: "filter",  x: 152, y: 40,  label: "IF Condition",  sub: "Logic",      color: B,         icon: "fork"   },
-    { id: "hubspot", x: 296, y: 6,   label: "HubSpot",       sub: "Update CRM", color: "#FF7A59", icon: "crm"    },
-    { id: "slack",   x: 296, y: 90,  label: "Slack",         sub: "Send alert", color: "#7B5EA7", icon: "bell"   },
+    { id: "webhook",   x: 4,   y: 88,  label: "Webhook",      sub: "Trigger",    color: "#E8504A", icon: "bolt"    },
+    { id: "ifelse",    x: 134, y: 88,  label: "IF Condition",  sub: "Logic",      color: B,         icon: "fork"    },
+    { id: "enrich",    x: 264, y: 26,  label: "AI Enrich",     sub: "Process",    color: "#A78BFA", icon: "sparkle" },
+    { id: "hubspot",   x: 392, y: 16,  label: "HubSpot",       sub: "Update CRM", color: "#FF7A59", icon: "crm"     },
+    { id: "slack",     x: 264, y: 150, label: "Slack",         sub: "Notify",     color: "#7B5EA7", icon: "bell"    },
+    { id: "dashboard", x: 392, y: 150, label: "Dashboard",     sub: "Log Result", color: G,         icon: "chart"   },
   ];
 
-  // Bezier connections — right-handle → left-handle
-  const N1rx = 8   + NW;  const N1my = 40 + NH / 2; // 108, 62
-  const N2lx = 152;        const N2my = 40 + NH / 2; // 152, 62
-  const N2rx = 152 + NW;  // 252, 62
-  const N3lx = 296;        const N3my = 6  + NH / 2; // 296, 28
-  const N4lx = 296;        const N4my = 90 + NH / 2; // 296, 112
+  const cy = (n: typeof nodes[0]) => n.y + NH / 2;
+  const rx = (n: typeof nodes[0]) => n.x + NW;
+
+  const [wh, ife, en, hs, sl, db] = nodes;
 
   const conns = [
-    {
-      id: "1-2",
-      d: `M ${N1rx} ${N1my} C ${N1rx + 22} ${N1my} ${N2lx - 22} ${N2my} ${N2lx} ${N2my}`,
-      len: 150, delay: 0,
-    },
-    {
-      id: "2-3",
-      d: `M ${N2rx} ${N2my} C ${N2rx + 22} ${N2my} ${N3lx - 10} ${N3my} ${N3lx} ${N3my}`,
-      len: 130, delay: 0.12,
-    },
-    {
-      id: "2-4",
-      d: `M ${N2rx} ${N2my} C ${N2rx + 22} ${N2my} ${N4lx - 10} ${N4my} ${N4lx} ${N4my}`,
-      len: 130, delay: 0.22,
-    },
+    { id: "w-if",  d: `M ${rx(wh)}  ${cy(wh)}  C ${rx(wh)  + 11} ${cy(wh)}  ${ife.x - 11} ${cy(ife)} ${ife.x} ${cy(ife)}`, len: 25,  delay: 0    },
+    { id: "if-en", d: `M ${rx(ife)} ${cy(ife)} C ${rx(ife) + 14} ${cy(ife)} ${en.x  - 14} ${cy(en)}  ${en.x}  ${cy(en)}`,  len: 100, delay: 0.10 },
+    { id: "if-sl", d: `M ${rx(ife)} ${cy(ife)} C ${rx(ife) + 14} ${cy(ife)} ${sl.x  - 14} ${cy(sl)}  ${sl.x}  ${cy(sl)}`,  len: 100, delay: 0.16 },
+    { id: "en-hs", d: `M ${rx(en)}  ${cy(en)}  C ${rx(en)  + 10} ${cy(en)}  ${hs.x  - 10} ${cy(hs)}  ${hs.x}  ${cy(hs)}`,  len: 25,  delay: 0.23 },
+    { id: "sl-db", d: `M ${rx(sl)}  ${cy(sl)}  C ${rx(sl)  + 10} ${cy(sl)}  ${db.x  - 10} ${cy(db)}  ${db.x}  ${cy(db)}`,  len: 25,  delay: 0.29 },
   ];
 
   return (
-    <div style={{ width: "100%", maxWidth: 450 }}>
-      {/* Canvas wrapper with dot-grid */}
+    <div style={{ width: "100%", maxWidth: 560 }}>
+      {/* Dark n8n canvas — site primary blue with muted-blue dot grid */}
       <div style={{
         borderRadius: 14,
         overflow: "hidden",
-        border: "1px solid rgba(0,0,0,0.09)",
-        background: "#F7F8FA",
-        backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.13) 1px, transparent 1px)",
+        border: "1px solid rgba(80,120,255,0.20)",
+        background: "var(--why-bg)",
+        backgroundImage: "radial-gradient(circle, rgba(80,120,255,0.16) 1px, transparent 1px)",
         backgroundSize: "14px 14px",
-        padding: "12px 8px 16px",
+        padding: "14px 8px 16px",
       }}>
-        <svg viewBox="0 0 408 150" style={{ width: "100%", display: "block" }}>
+        <svg viewBox="0 0 510 218" style={{ width: "100%", display: "block" }}>
 
           {/* ── Bezier connections ── */}
           {conns.map((c) => (
             <g key={c.id}>
-              {/* Track (always) */}
+              {/* Track */}
               <path d={c.d} fill="none"
-                stroke="rgba(0,0,0,0.07)" strokeWidth="2" strokeLinecap="round" />
+                stroke="rgba(255,255,255,0.06)" strokeWidth="2" strokeLinecap="round" />
               {/* Animated draw */}
               <path d={c.d} fill="none"
                 stroke={running ? G : B}
@@ -595,17 +587,17 @@ export function AutomationAnim({ active }: { active: boolean }) {
 
           {/* ── Flowing data dots — phase 2 ── */}
           {running && conns.map((c, i) => (
-            <circle key={c.id + "d"} r="4" fill={GL} opacity="0.9">
+            <circle key={c.id + "d"} r="3.5" fill={GL} opacity="0.9">
               <animateMotion
-                dur={`${0.80 + i * 0.10}s`}
-                begin={`${i * 0.25}s`}
+                dur={`${0.75 + i * 0.08}s`}
+                begin={`${i * 0.22}s`}
                 repeatCount="indefinite"
                 path={c.d}
               />
               <animate attributeName="opacity"
                 values="0;1;1;0" keyTimes="0;0.08;0.88;1"
-                dur={`${0.80 + i * 0.10}s`}
-                begin={`${i * 0.25}s`}
+                dur={`${0.75 + i * 0.08}s`}
+                begin={`${i * 0.22}s`}
                 repeatCount="indefinite"
               />
             </circle>
@@ -613,108 +605,124 @@ export function AutomationAnim({ active }: { active: boolean }) {
 
           {/* ── Nodes ── */}
           {nodes.map((n, i) => {
-            const icx = n.x + 16;          // icon centre x
-            const icy = n.y + NH / 2;      // icon centre y
-            const rhx = n.x + NW;          // right handle x
-            const hcy = n.y + NH / 2;      // handle centre y
+            const icx = n.x + 16;
+            const icy = n.y + NH / 2;
+            const rhx = n.x + NW;
+            const hcy = n.y + NH / 2;
 
             return (
               <g key={n.id}>
 
-                {/* White card */}
+                {/* Dark-glass card */}
                 <rect x={n.x} y={n.y} width={NW} height={NH} rx="9"
-                  fill="#FFFFFF"
-                  stroke={built ? n.color + "55" : "rgba(0,0,0,0.10)"}
+                  fill={built ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.03)"}
+                  stroke={built ? n.color + "55" : "rgba(255,255,255,0.08)"}
                   strokeWidth="1.5"
-                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                  style={{ transition: `fill .35s ease ${i * 0.07}s, stroke .35s ease ${i * 0.07}s` }}
                 />
 
                 {/* Icon strip — rounded-left, square-right */}
                 <rect x={n.x} y={n.y} width={32} height={NH} rx="9"
-                  fill={built ? n.color + "1C" : "rgba(0,0,0,0.04)"}
+                  fill={built ? n.color + "22" : "rgba(255,255,255,0.04)"}
                   style={{ transition: `fill .35s ease ${i * 0.07}s` }}
                 />
-                {/* Square off the right-side radius of strip */}
                 <rect x={n.x + 22} y={n.y} width={10} height={NH}
-                  fill={built ? n.color + "1C" : "rgba(0,0,0,0.04)"}
+                  fill={built ? n.color + "22" : "rgba(255,255,255,0.04)"}
                   style={{ transition: `fill .35s ease ${i * 0.07}s` }}
                 />
-                {/* Strip divider */}
                 <line x1={n.x + 32} y1={n.y + 7} x2={n.x + 32} y2={n.y + NH - 7}
-                  stroke={built ? n.color + "30" : "rgba(0,0,0,0.07)"}
+                  stroke={built ? n.color + "35" : "rgba(255,255,255,0.07)"}
                   strokeWidth="1"
                   style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
                 />
 
-                {/* ── Node icon ── */}
+                {/* ── Icons ── */}
                 {n.icon === "bolt" && (
                   <path
                     d={`M ${icx+3} ${icy-8} L ${icx-3} ${icy+1} L ${icx+1} ${icy+1} L ${icx-2} ${icy+8} L ${icx+5} ${icy-1} L ${icx} ${icy-1} Z`}
-                    fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                    fill={built ? n.color : "rgba(255,255,255,0.18)"}
                     style={{ transition: `fill .35s ease ${i * 0.07}s` }}
                   />
                 )}
                 {n.icon === "fork" && (
-                  <g stroke={built ? n.color : "rgba(0,0,0,0.18)"} strokeWidth="1.8"
+                  <g stroke={built ? n.color : "rgba(255,255,255,0.18)"} strokeWidth="1.8"
                     fill="none" strokeLinecap="round"
                     style={{ transition: `stroke .35s ease ${i * 0.07}s` }}>
                     <line x1={icx - 5} y1={icy} x2={icx} y2={icy} />
-                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy - 6} />
-                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy + 6} />
+                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy - 5} />
+                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy + 5} />
+                  </g>
+                )}
+                {n.icon === "sparkle" && (
+                  <g stroke={built ? n.color : "rgba(255,255,255,0.18)"} strokeWidth="1.6"
+                    fill="none" strokeLinecap="round"
+                    style={{ transition: `stroke .35s ease ${i * 0.07}s` }}>
+                    <line x1={icx} y1={icy - 8} x2={icx} y2={icy + 8} />
+                    <line x1={icx - 8} y1={icy} x2={icx + 8} y2={icy} />
+                    <line x1={icx - 5.5} y1={icy - 5.5} x2={icx + 5.5} y2={icy + 5.5} />
+                    <line x1={icx + 5.5} y1={icy - 5.5} x2={icx - 5.5} y2={icy + 5.5} />
                   </g>
                 )}
                 {n.icon === "crm" && (
                   <>
                     <circle cx={icx} cy={icy} r="7.5"
-                      fill={built ? n.color + "22" : "rgba(0,0,0,0.05)"}
+                      fill={built ? n.color + "25" : "rgba(255,255,255,0.05)"}
                       style={{ transition: `fill .35s ease ${i * 0.07}s` }}
                     />
                     <text x={icx} y={icy + 3.5} textAnchor="middle"
                       fontSize="9" fontWeight="700" fontFamily="Inter,sans-serif"
-                      fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                      fill={built ? n.color : "rgba(255,255,255,0.18)"}
                       style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
                       H
                     </text>
                   </>
                 )}
                 {n.icon === "bell" && (
-                  <g fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                  <g fill={built ? n.color : "rgba(255,255,255,0.18)"}
                     style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
                     <path d={`M ${icx} ${icy-8} C ${icx-6} ${icy-8} ${icx-6} ${icy+2} ${icx-6} ${icy+2} L ${icx+6} ${icy+2} C ${icx+6} ${icy+2} ${icx+6} ${icy-8} ${icx} ${icy-8} Z`} />
                     <rect x={icx - 2} y={icy + 2} width={4} height={2.5} rx="1" />
                     <rect x={icx - 1.2} y={icy + 4.5} width={2.4} height={2} rx="1" />
                   </g>
                 )}
+                {n.icon === "chart" && (
+                  <g fill={built ? n.color : "rgba(255,255,255,0.18)"}
+                    style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
+                    <rect x={icx - 7} y={icy + 1} width={4} height={6} rx="1" />
+                    <rect x={icx - 1.5} y={icy - 3} width={4} height={10} rx="1" />
+                    <rect x={icx + 4} y={icy - 7} width={4} height={14} rx="1" />
+                  </g>
+                )}
 
                 {/* Node name */}
                 <text x={n.x + 38} y={n.y + 17} fontSize="8" fontWeight="600"
                   fontFamily="Inter, sans-serif"
-                  fill={built ? "rgba(0,0,0,0.78)" : "rgba(0,0,0,0.25)"}
+                  fill={built ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.22)"}
                   style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
                   {n.label}
                 </text>
                 {/* Sub label */}
                 <text x={n.x + 38} y={n.y + 30} fontSize="7" fontWeight="500"
                   fontFamily="Inter, sans-serif"
-                  fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                  fill={built ? n.color : "rgba(255,255,255,0.18)"}
                   style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
                   {n.sub}
                 </text>
 
                 {/* Connection handles */}
                 <circle cx={n.x} cy={hcy} r="3.5"
-                  fill="#F7F8FA" stroke={built ? n.color : "rgba(0,0,0,0.14)"} strokeWidth="1.5"
-                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                  stroke={built ? n.color : "rgba(255,255,255,0.16)"} strokeWidth="1.5"
+                  style={{ fill: "var(--why-bg)", transition: `stroke .35s ease ${i * 0.07}s` }}
                 />
                 <circle cx={rhx} cy={hcy} r="3.5"
-                  fill="#F7F8FA" stroke={built ? n.color : "rgba(0,0,0,0.14)"} strokeWidth="1.5"
-                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                  stroke={built ? n.color : "rgba(255,255,255,0.16)"} strokeWidth="1.5"
+                  style={{ fill: "var(--why-bg)", transition: `stroke .35s ease ${i * 0.07}s` }}
                 />
 
                 {/* Execution badge — running */}
                 <g style={{ opacity: running ? 1 : 0, transition: `opacity .3s ease ${i * 0.08}s` }}>
-                  <rect x={rhx - 10} y={n.y - 13} width="20" height="13" rx="6.5" fill={G} />
-                  <text x={rhx} y={n.y - 4} textAnchor="middle" fontSize="8" fontWeight="700"
+                  <rect x={rhx - 10} y={n.y - 14} width="20" height="13" rx="6.5" fill={G} />
+                  <text x={rhx} y={n.y - 5} textAnchor="middle" fontSize="8" fontWeight="700"
                     fontFamily="Inter, sans-serif" fill="white">✓</text>
                 </g>
 
@@ -723,12 +731,12 @@ export function AutomationAnim({ active }: { active: boolean }) {
           })}
 
           {/* ── "Saving 6h / week" badge — phase 2 ── */}
-          <g style={{ opacity: running ? 1 : 0, transition: "opacity .45s ease .3s" }}>
-            <rect x="134" y="123" width="140" height="20" rx="10"
-              fill={G + "18"} stroke={G + "45"} strokeWidth="1" />
-            <text x="204" y="136.5" textAnchor="middle" fontSize="8.5" fontWeight="700"
+          <g style={{ opacity: running ? 1 : 0, transition: "opacity .45s ease .35s" }}>
+            <rect x="155" y="200" width="200" height="18" rx="9"
+              fill={G + "20"} stroke={G + "50"} strokeWidth="1" />
+            <text x="255" y="212" textAnchor="middle" fontSize="8.5" fontWeight="700"
               fontFamily="Inter, sans-serif" fill={GL}>
-              Saving 6h / week
+              Saving 6h / week · 0 errors
             </text>
           </g>
 
