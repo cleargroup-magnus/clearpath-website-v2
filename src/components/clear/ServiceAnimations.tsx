@@ -52,174 +52,171 @@ export function WebDevAnim({ active }: { active: boolean }) {
   const built = phase >= 1;
   const live  = phase === 2;
 
+  // Light-mode browser palette
+  const chrome   = "#EAEAEC";   // title bar bg
+  const pageBg   = "#FFFFFF";   // page area
+  const wire     = "rgba(0,0,0,0.09)";  // wireframe placeholder bars
+  const wireFaint = "rgba(0,0,0,0.05)";
+
   return (
     <div style={{ width: "100%", maxWidth: 400 }}>
       <svg viewBox="0 0 320 210" style={{ width: "100%", display: "block" }}>
-        {/* Browser chrome */}
-        <rect x="0" y="0" width="320" height="210" rx="12"
-          fill={built ? "oklch(0.18 0.04 260)" : "oklch(0.14 0.02 260)"}
-          style={{ transition: "fill .6s ease" }}
-        />
+
+        {/* ── Browser shell (always light) ── */}
+        <rect x="0" y="0" width="320" height="210" rx="12" fill={chrome} />
 
         {/* Title bar */}
-        <rect x="0" y="0" width="320" height="28" rx="0"
-          fill={built ? "oklch(0.22 0.06 260)" : "oklch(0.17 0.02 260)"}
-          style={{ transition: "fill .6s ease" }}
-        />
-        <rect x="0" y="0" width="320" height="12" rx="0" fill="none" />
-        {/* Top rounded corners of title bar */}
-        <rect x="0" y="0" width="320" height="28" rx="12" fill="none" />
+        <rect x="0" y="0" width="320" height="28" rx="12" fill={chrome} />
+        {/* Kill bottom radius on title bar */}
+        <rect x="0" y="16" width="320" height="12" fill={chrome} />
 
-        {/* Traffic lights */}
+        {/* Traffic lights: gray → colour when built */}
         <circle cx="16" cy="14" r="4.5"
-          fill={built ? "oklch(0.65 0.22 25)" : "rgba(255,255,255,0.10)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? "#FF5F57" : "rgba(0,0,0,0.15)"}
+          style={{ transition: "fill .4s ease" }}
         />
         <circle cx="29" cy="14" r="4.5"
-          fill={built ? "oklch(0.68 0.22 80)" : "rgba(255,255,255,0.10)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? "#FFBD2E" : "rgba(0,0,0,0.15)"}
+          style={{ transition: "fill .4s ease .05s" }}
         />
         <circle cx="42" cy="14" r="4.5"
-          fill={built ? "oklch(0.68 0.22 140)" : "rgba(255,255,255,0.10)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? "#28C840" : "rgba(0,0,0,0.15)"}
+          style={{ transition: "fill .4s ease .10s" }}
         />
 
         {/* URL bar */}
         <rect x="58" y="7" width="160" height="14" rx="7"
-          fill={built ? "oklch(0.26 0.06 260)" : "rgba(255,255,255,0.06)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? "#FFFFFF" : "rgba(0,0,0,0.10)"}
+          style={{ transition: "fill .4s ease" }}
         />
-        {/* URL text — phase 2 */}
+        {/* URL text — live only */}
         <text x="138" y="17" textAnchor="middle" fontSize="7.5"
-          fill={live ? "rgba(255,255,255,0.75)" : "transparent"}
+          fill={live ? "rgba(0,0,0,0.55)" : "transparent"}
           fontFamily="monospace"
-          style={{ transition: "fill .5s ease .2s" }}>
+          style={{ transition: "fill .4s ease .15s" }}>
           yourclient.com
         </text>
 
         {/* LIVE badge */}
         <rect x="232" y="7" width="36" height="14" rx="7"
-          fill={live ? "oklch(0.62 0.20 150 / 0.25)" : "transparent"}
-          stroke={live ? GL : "transparent"}
+          fill={live ? "rgba(40,200,64,0.15)" : "transparent"}
+          stroke={live ? "#28C840" : "transparent"}
           strokeWidth="0.8"
-          style={{ transition: "all .4s ease .3s" }}
+          style={{ transition: "all .35s ease .2s" }}
         />
-        <circle cx="240" cy="14" r="3"
-          fill={live ? G : "transparent"}
-          style={{ transition: "fill .4s ease .35s" }}
+        <circle cx="240" cy="14" r="2.8"
+          fill={live ? "#28C840" : "transparent"}
+          style={{ transition: "fill .35s ease .25s" }}
         />
         <text x="252" y="17.5" textAnchor="middle" fontSize="6.5" fontWeight="700"
           fontFamily="Inter, sans-serif"
-          fill={live ? GL : "transparent"}
-          style={{ transition: "fill .4s ease .35s" }}>
+          fill={live ? "#28C840" : "transparent"}
+          style={{ transition: "fill .35s ease .25s" }}>
           LIVE
         </text>
 
-        {/* Page area background */}
-        <rect x="0" y="28" width="320" height="182" rx="0"
-          fill={built ? "oklch(0.16 0.04 260)" : "oklch(0.13 0.01 260)"}
-          style={{ transition: "fill .6s ease" }}
-        />
+        {/* ── Page area: always white ── */}
+        <rect x="0" y="28" width="320" height="182" fill={pageBg} />
 
         {/* ── NAV BAR ── */}
         <rect x="0" y="28" width="320" height="26"
-          fill={built ? B + "1a" : "rgba(255,255,255,0.03)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? B + "12" : "rgba(0,0,0,0.025)"}
+          style={{ transition: "fill .45s ease" }}
         />
-        {/* Logo box */}
+        {/* Logo pill */}
         <rect x="12" y="34" width="28" height="14" rx="4"
-          fill={built ? B + "55" : "rgba(255,255,255,0.06)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? B + "30" : wire}
+          style={{ transition: "fill .45s ease" }}
         />
         <text x="26" y="43.5" textAnchor="middle" fontSize="6" fontWeight="700"
           fontFamily="Inter, sans-serif"
-          fill={built ? BL : "transparent"}
-          style={{ transition: "fill .5s ease" }}>
+          fill={built ? B : "transparent"}
+          style={{ transition: "fill .45s ease" }}>
           LOGO
         </text>
         {/* Nav links */}
         {[200, 225, 250].map((x, i) => (
           <rect key={i} x={x} y="37" width="20" height="5" rx="2.5"
-            fill={built ? BL + "33" : "rgba(255,255,255,0.06)"}
-            style={{ transition: `fill .5s ease ${i * 0.07}s` }}
+            fill={built ? "rgba(0,0,0,0.18)" : wire}
+            style={{ transition: `fill .45s ease ${i * 0.06}s` }}
           />
         ))}
-        {/* CTA button in nav */}
+        {/* Nav CTA */}
         <rect x="278" y="33" width="30" height="14" rx="7"
-          fill={built ? B : "rgba(255,255,255,0.05)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? B : wire}
+          style={{ transition: "fill .45s ease" }}
         />
 
-        {/* ── HERO BANNER ── */}
+        {/* ── HERO SECTION ── */}
         <rect x="0" y="54" width="320" height="72"
-          fill={built ? B + "0d" : "rgba(255,255,255,0.015)"}
-          style={{ transition: "fill .5s ease" }}
+          fill={built ? B + "0c" : "rgba(0,0,0,0.02)"}
+          style={{ transition: "fill .45s ease" }}
         />
-        {/* Headline bars */}
-        <rect x="20" y="66" width="160" height="10" rx="4"
-          fill={built ? "rgba(255,255,255,0.42)" : "rgba(255,255,255,0.08)"}
-          style={{ transition: "fill .5s ease" }}
+        {/* Headline */}
+        <rect x="20" y="66" width="155" height="10" rx="4"
+          fill={built ? "rgba(0,0,0,0.75)" : wire}
+          style={{ transition: "fill .45s ease" }}
         />
-        <rect x="20" y="80" width="120" height="7" rx="3"
-          fill={built ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.05)"}
-          style={{ transition: "fill .5s ease" }}
+        <rect x="20" y="80" width="110" height="7" rx="3"
+          fill={built ? "rgba(0,0,0,0.40)" : wireFaint}
+          style={{ transition: "fill .45s ease" }}
         />
-        {/* Hero CTA */}
-        <rect x="20" y="94" width="64" height="20" rx="10"
-          fill={built ? B : "rgba(255,255,255,0.05)"}
-          style={{ transition: "fill .5s ease" }}
+        {/* Hero CTA button */}
+        <rect x="20" y="94" width="60" height="18" rx="9"
+          fill={built ? B : wire}
+          style={{ transition: "fill .45s ease" }}
         />
-        <text x="52" y="107" textAnchor="middle" fontSize="7" fontWeight="600"
+        <text x="50" y="106" textAnchor="middle" fontSize="6.5" fontWeight="600"
           fontFamily="Inter, sans-serif"
-          fill={built ? "rgba(255,255,255,0.9)" : "transparent"}
-          style={{ transition: "fill .5s ease" }}>
+          fill={built ? "#FFFFFF" : "transparent"}
+          style={{ transition: "fill .45s ease" }}>
           Get started
         </text>
+        {/* Hero image placeholder (right side of hero) */}
+        <rect x="210" y="58" width="96" height="60" rx="8"
+          fill={built ? B + "18" : wireFaint}
+          stroke={built ? B + "28" : "rgba(0,0,0,0.07)"}
+          strokeWidth="1"
+          style={{ transition: "all .45s ease" }}
+        />
 
-        {/* ── CONTENT BLOCKS ── */}
-        {/* 3 content cards */}
+        {/* ── 3-COLUMN FEATURE CARDS ── */}
         {[0, 1, 2].map((i) => (
           <g key={i}>
-            <rect x={12 + i * 100} y="138" width="88" height="52" rx="8"
-              fill={built ? B + "0f" : "rgba(255,255,255,0.02)"}
-              stroke={built ? B + "35" : "rgba(255,255,255,0.06)"}
+            <rect x={12 + i * 102} y="138" width="90" height="54" rx="8"
+              fill={built ? "#FAFAFA" : "#F7F7F8"}
+              stroke={built ? B + "28" : "rgba(0,0,0,0.08)"}
               strokeWidth="1"
-              style={{ transition: `all .5s ease ${i * 0.1}s` }}
+              style={{ transition: `all .45s ease ${i * 0.08}s` }}
             />
-            <rect x={20 + i * 100} y="148" width="50" height="6" rx="3"
-              fill={built ? BL + "44" : "rgba(255,255,255,0.06)"}
-              style={{ transition: `fill .5s ease ${i * 0.1}s` }}
+            {/* Card icon dot */}
+            <circle cx={24 + i * 102} cy="152" r="5"
+              fill={built ? B + "22" : "rgba(0,0,0,0.07)"}
+              style={{ transition: `fill .45s ease ${i * 0.08}s` }}
             />
-            <rect x={20 + i * 100} y="158" width="68" height="4" rx="2"
-              fill={built ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.04)"}
-              style={{ transition: `fill .5s ease ${i * 0.1 + 0.05}s` }}
+            {/* Card title bar */}
+            <rect x={33 + i * 102} y="148" width="52" height="6" rx="3"
+              fill={built ? "rgba(0,0,0,0.65)" : wire}
+              style={{ transition: `fill .45s ease ${i * 0.08}s` }}
             />
-            <rect x={20 + i * 100} y="165" width="56" height="4" rx="2"
-              fill={built ? "rgba(255,255,255,0.09)" : "rgba(255,255,255,0.03)"}
-              style={{ transition: `fill .5s ease ${i * 0.1 + 0.1}s` }}
+            {/* Card body lines */}
+            <rect x={20 + i * 102} y="162" width="66" height="4" rx="2"
+              fill={built ? "rgba(0,0,0,0.20)" : wireFaint}
+              style={{ transition: `fill .45s ease ${i * 0.08 + 0.06}s` }}
+            />
+            <rect x={20 + i * 102} y="170" width="50" height="4" rx="2"
+              fill={built ? "rgba(0,0,0,0.13)" : wireFaint}
+              style={{ transition: `fill .45s ease ${i * 0.08 + 0.10}s` }}
+            />
+            <rect x={20 + i * 102} y="178" width="38" height="4" rx="2"
+              fill={built ? "rgba(0,0,0,0.08)" : wireFaint}
+              style={{ transition: `fill .45s ease ${i * 0.08 + 0.14}s` }}
             />
           </g>
         ))}
 
-        {/* Sidebar placeholder (right side) */}
-        <rect x="228" y="138" width="80" height="52" rx="8"
-          fill={built ? B + "0a" : "rgba(255,255,255,0.015)"}
-          stroke={built ? B + "25" : "rgba(255,255,255,0.04)"}
-          strokeWidth="1"
-          style={{ transition: "all .5s ease .25s" }}
-        />
-        <rect x="238" y="148" width="44" height="5" rx="2"
-          fill={built ? BL + "33" : "rgba(255,255,255,0.04)"}
-          style={{ transition: "fill .5s ease .25s" }}
-        />
-        <rect x="238" y="157" width="56" height="3.5" rx="1.5"
-          fill={built ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)"}
-          style={{ transition: "fill .5s ease .3s" }}
-        />
-        <rect x="238" y="164" width="48" height="3.5" rx="1.5"
-          fill={built ? "rgba(255,255,255,0.07)" : "rgba(255,255,255,0.02)"}
-          style={{ transition: "fill .5s ease .35s" }}
-        />
+        {/* Bottom separator */}
+        <rect x="0" y="208" width="320" height="2" rx="1" fill="rgba(0,0,0,0.06)" />
       </svg>
 
       <div style={{ marginTop: 8 }}>

@@ -46,8 +46,8 @@ function WebDevelopmentPage() {
                   </a>
                 </div>
               </div>
-              <div className="rounded-[24px] p-10 flex items-center justify-center"
-                style={{ background: "#ffffff", boxShadow: "0 8px 48px rgba(0,0,0,0.10), 0 2px 8px rgba(0,0,0,0.05)", minHeight: 360 }}>
+              <div className="rounded-[28px] p-8 flex items-center justify-center"
+                style={{ background: "var(--why-card)", border: "1px solid var(--why-card-border)", minHeight: 360 }}>
                 <WebDevAnim active={true} />
               </div>
             </div>
