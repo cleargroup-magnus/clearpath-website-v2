@@ -30,7 +30,7 @@ function MetaGoogleAdsPage() {
                 </span>
                 <h1 style={{ color: "rgba(255,255,255,0.95)", fontSize: "clamp(36px,5vw,58px)" }}
                   className="mb-5 font-display font-medium leading-[1.08] tracking-[-0.03em]">
-                  Qualified leads from paid ads. Not just clicks.
+                  Stop buying clicks. Start reaching buyers.
                 </h1>
                 <p className="mb-8 text-[17px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.55)" }}>
                   We build Meta and Google ad systems focused on one thing: generating leads that convert into revenue, not metrics that look good in reports.
