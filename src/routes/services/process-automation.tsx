@@ -30,7 +30,7 @@ function ProcessAutomationPage() {
                 </span>
                 <h1 style={{ color: "rgba(255,255,255,0.95)", fontSize: "clamp(36px,5vw,58px)" }}
                   className="mb-5 font-display font-medium leading-[1.08] tracking-[-0.03em]">
-                  Stop paying people to do what software can handle.
+                  Stop wasting time on what can be automated.
                 </h1>
                 <p className="mb-8 text-[17px] leading-[1.75]" style={{ color: "rgba(255,255,255,0.55)" }}>
                   We map your repetitive workflows and replace them with automations that run 24/7 without bottlenecks, errors, or manual input.
