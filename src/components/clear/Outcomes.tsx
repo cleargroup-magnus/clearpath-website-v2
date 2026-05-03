@@ -102,9 +102,9 @@ export function Outcomes() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-bg-soft px-6 pt-16 pb-20 md:px-[72px]">
+    <section ref={sectionRef} className="bg-bg-soft px-6 pt-12 pb-16 md:px-[72px]">
       <div className="mx-auto max-w-[1080px]">
-        <div className="mb-12 text-center">
+        <div className="mb-8 text-center">
           <h2 className="mb-3 font-display text-[clamp(24px,3vw,38px)] font-medium leading-tight tracking-tight text-text-base">
             Everything working together{" "}
             <span className="text-blue">to grow your business.</span>

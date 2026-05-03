@@ -72,8 +72,8 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
 
 export function Why() {
   return (
-    <section id="why" className="px-6 pt-24 pb-28 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
-      <div className="mx-auto mb-16 max-w-[780px] text-center">
+    <section id="why" className="px-6 pt-20 pb-20 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
+      <div className="mx-auto mb-10 max-w-[780px] text-center">
         <div className="mb-5 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: "oklch(0.72 0.15 260)" }}>
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
           Why clear.group
@@ -92,7 +92,7 @@ export function Why() {
         {items.map((item, i) => <WhyCard key={item.title} item={item} index={i} />)}
       </div>
 
-      <p className="mx-auto mt-16 max-w-[560px] text-center text-[15px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.28)" }}>
+      <p className="mx-auto mt-10 max-w-[560px] text-center text-[15px] leading-[1.9]" style={{ color: "rgba(255,255,255,0.28)" }}>
         We've walked into these problems across SaaS, B2B services, and e-commerce.{" "}
         <span style={{ color: "rgba(255,255,255,0.52)" }}>
           There's always a gap between where growth should be and where it is. That gap is where we work.

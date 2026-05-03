@@ -132,7 +132,7 @@ function ServiceCard({ s, index }: { s: (typeof services)[0]; index: number }) {
 
 export function Services() {
   return (
-    <section id="services" className="bg-background px-6 py-28 md:px-[72px]">
+    <section id="services" className="bg-background px-6 py-16 md:px-[72px]">
       <SectionHead
         tag="What we do"
         title="Six outcomes,"

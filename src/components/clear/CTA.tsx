@@ -1,7 +1,7 @@
 export function CTA() {
   return (
-    <section id="cta" className="bg-background px-6 py-20 md:px-[72px]">
-      <div className="relative mx-auto max-w-[880px] overflow-hidden rounded-[28px] bg-navy px-8 py-16 text-center md:px-14 md:py-20">
+    <section id="cta" className="bg-background px-6 py-14 md:px-[72px]">
+      <div className="relative mx-auto max-w-[880px] overflow-hidden rounded-[28px] bg-navy px-8 py-14 text-center md:px-14 md:py-16">
         <div
           aria-hidden="true"
           className="pointer-events-none absolute -right-[10%] -top-[40%] h-[400px] w-[400px]"

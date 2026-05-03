@@ -138,7 +138,7 @@ export function Process() {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="bg-navy px-6 pt-28 pb-24 md:px-[72px]"
+      className="bg-navy px-6 pt-20 pb-16 md:px-[72px]"
       style={{
         opacity: sectionVisible ? 1 : 0,
         transform: sectionVisible ? "translateY(0)" : "translateY(16px)",
@@ -376,7 +376,7 @@ export function Process() {
 
       {/* Bottom CTA — always visible once section is in view */}
       <div
-        className="mx-auto mt-16 max-w-[800px] flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between"
+        className="mx-auto mt-10 max-w-[800px] flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between"
         style={{
           opacity: sectionVisible ? 1 : 0,
           transform: sectionVisible ? "translateY(0)" : "translateY(12px)",
