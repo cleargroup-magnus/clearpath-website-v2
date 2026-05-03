@@ -785,88 +785,136 @@ export function AutomationAnim({ active }: { active: boolean }) {
 }
 
 /* ─────────────────────────── Meta & Google Ads ──────────────────────── */
-/* Conversion funnel                                                         */
+/* Conversion funnel: Empty → Filling → Converting                          */
 export function AdsAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 1800, 2400, 2200);
+  const phase = usePhase(active, 1400, 1600, 1800);
 
+  const filled     = phase >= 1;
+  const converting = phase === 2;
+
+  // Funnel geometry
+  const cx     = 118;  // horizontal centre
+  const startY = 14;
+  const tierH  = 35;
+
+  // Each tier: top width, colour. Bottom width = next tier's top width.
   const tiers = [
-    { label: "Traffic",   count: "10k",  widthPct: 1.00 },
-    { label: "Clicks",    count: "2.1k", widthPct: 0.75 },
-    { label: "Leads",     count: "340",  widthPct: 0.52 },
-    { label: "Qualified", count: "89",   widthPct: 0.34 },
-    { label: "Customers", count: "23",   widthPct: 0.20 },
+    { label: "Traffic",   count: "10k",  w: 196, color: "oklch(0.54 0.24 263)" },
+    { label: "Clicks",    count: "2.1k", w: 152, color: "oklch(0.52 0.22 247)" },
+    { label: "Leads",     count: "340",  w: 108, color: "oklch(0.54 0.20 225)" },
+    { label: "Qualified", count: "89",   w:  72, color: "oklch(0.55 0.20 198)" },
+    { label: "Customers", count: "23",   w:  48, color: "oklch(0.57 0.20 152)" },
   ];
 
-  const totalW = 200;
-  const tierH  = 30;
-  const startY = 16;
-  const gap    = 4;
+  const funnelBottom = startY + tiers.length * tierH; // 14 + 175 = 189
+  const countX = 240; // fixed right column for all count labels
 
   return (
-    <div style={{ width: "100%", maxWidth: 240 }}>
-      <svg viewBox="0 0 240 260" style={{ width: "100%", display: "block", overflow: "visible" }}>
+    <div style={{ width: "100%", maxWidth: 252 }}>
+      <svg viewBox="0 0 252 234" style={{ width: "100%", display: "block" }}>
+
+        {/* ── Trapezoid tiers (connected, no gap) ── */}
         {tiers.map((tier, i) => {
-          const w = totalW * tier.widthPct;
-          const x = (totalW - w) / 2 + 20;
-          const y = startY + i * (tierH + gap);
-          const filled = phase >= 1;
-          const delay = i * 0.12;
+          const topW = tier.w;
+          const botW = i < tiers.length - 1 ? tiers[i + 1].w : tier.w;
+          const y    = startY + i * tierH;
+          const midy = y + tierH / 2;
+
+          // Trapezoid corners
+          const tlx = cx - topW / 2;
+          const trx = cx + topW / 2;
+          const blx = cx - botW / 2;
+          const brx = cx + botW / 2;
+
+          const points  = `${tlx},${y} ${trx},${y} ${brx},${y + tierH} ${blx},${y + tierH}`;
+          const delay   = i * 0.11;
+          const lblSize = topW < 58 ? 7 : topW < 85 ? 8 : 9;
 
           return (
             <g key={tier.label}>
-              {/* Tier rect */}
-              <rect x={x} y={y} width={w} height={tierH} rx="6"
-                fill={filled ? `oklch(${0.52 + i * 0.03} 0.22 260 / 0.65)` : "rgba(255,255,255,0.05)"}
-                stroke={filled ? B + "55" : "rgba(255,255,255,0.08)"}
-                strokeWidth="1"
-                style={{
-                  transition: `fill .5s ease ${delay}s, stroke .5s ease ${delay}s`,
-                }}
+
+              {/* Filled trapezoid */}
+              <polygon points={points}
+                fill={filled ? tier.color : "rgba(255,255,255,0.04)"}
+                style={{ transition: `fill .4s ease ${delay}s` }}
               />
-              {/* Label inside */}
-              <text x={x + w / 2} y={y + tierH / 2 + 1} textAnchor="middle" fontSize="9"
-                fontWeight="600" fontFamily="Inter, sans-serif"
-                fill={filled ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.20)"}
-                style={{ transition: `fill .5s ease ${delay}s` }}>
+
+              {/* Tier divider (separates adjacent tiers cleanly) */}
+              {i > 0 && (
+                <line x1={tlx} y1={y} x2={trx} y2={y}
+                  stroke="rgba(0,0,0,0.18)" strokeWidth="0.75"
+                />
+              )}
+
+              {/* Label — centred in trapezoid, single element */}
+              <text x={cx} y={midy + 3.5} textAnchor="middle"
+                fontSize={lblSize} fontWeight="600" fontFamily="Inter, sans-serif"
+                fill={filled ? "rgba(255,255,255,0.93)" : "rgba(255,255,255,0.14)"}
+                style={{ transition: `fill .4s ease ${delay}s` }}>
                 {tier.label}
               </text>
-              {/* Count beside */}
-              <text x={x + w + 8} y={y + tierH / 2 + 1} fontSize="9"
-                fontWeight="700" fontFamily="Inter, sans-serif"
-                fill={filled ? BL : "rgba(255,255,255,0.15)"}
-                style={{ transition: `fill .5s ease ${delay}s` }}>
+
+              {/* Faint tick from tier right-edge to count column */}
+              <line
+                x1={trx + 2} y1={midy}
+                x2={countX - 26} y2={midy}
+                stroke={filled ? tier.color + "40" : "rgba(255,255,255,0.05)"}
+                strokeWidth="0.75"
+                strokeDasharray="2 3"
+                style={{ transition: `stroke .4s ease ${delay}s` }}
+              />
+
+              {/* Count — fixed right column */}
+              <text x={countX} y={midy + 3.5} textAnchor="end"
+                fontSize="9" fontWeight="700" fontFamily="Inter, sans-serif"
+                fill={filled ? tier.color : "rgba(255,255,255,0.12)"}
+                style={{ transition: `fill .4s ease ${delay}s` }}>
                 {tier.count}
               </text>
+
             </g>
           );
         })}
 
-        {/* ROAS badge — phase 2 */}
-        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .5s ease .35s" }}>
-          <rect x="60" y="194" width="120" height="24" rx="12"
-            fill={G + "20"}
-            stroke={G + "60"}
-            strokeWidth="1"
+        {/* Outer funnel border — always visible, faint */}
+        <path
+          d={`M ${cx - tiers[0].w / 2} ${startY} L ${cx + tiers[0].w / 2} ${startY} L ${cx + tiers[tiers.length - 1].w / 2} ${funnelBottom} L ${cx - tiers[tiers.length - 1].w / 2} ${funnelBottom} Z`}
+          fill="none"
+          stroke="rgba(255,255,255,0.08)"
+          strokeWidth="1"
+        />
+
+        {/* ── Connector from funnel bottom to ROAS badge ── */}
+        <line
+          x1={cx} y1={funnelBottom}
+          x2={cx} y2={funnelBottom + 14}
+          stroke={converting ? G : "rgba(255,255,255,0.06)"}
+          strokeWidth="1.5"
+          strokeDasharray="3 2"
+          style={{ transition: "stroke .35s ease .1s" }}
+        />
+
+        {/* ── ROAS badge — anchored below funnel ── */}
+        <g style={{ opacity: converting ? 1 : 0, transition: "opacity .4s ease .2s" }}>
+          <rect
+            x={cx - 58} y={funnelBottom + 14}
+            width="116" height="28"
+            rx="14"
+            fill={G + "1C"} stroke={G + "55"} strokeWidth="1"
           />
-          <circle cx="80" cy="206" r="4" fill={G} />
-          <text x="126" y="210" textAnchor="middle" fontSize="10" fontWeight="700"
-            fontFamily="Inter, sans-serif" fill={GL}>
-            ROAS 4.2x
+          {/* Green pulse dot */}
+          <circle cx={cx - 34} cy={funnelBottom + 28} r="4" fill={G} />
+          {/* Label */}
+          <text
+            x={cx + 12} y={funnelBottom + 32}
+            textAnchor="middle"
+            fontSize="10.5" fontWeight="700"
+            fontFamily="Inter, sans-serif"
+            fill={GL}>
+            ROAS 4.2×
           </text>
         </g>
 
-        {/* Small upward chart — phase 2 */}
-        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .5s ease .5s" }}>
-          <polyline
-            points="70,240 90,232 110,225 130,218 150,210 170,204"
-            fill="none"
-            stroke={G}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-          <circle cx="170" cy="204" r="3.5" fill={G} />
-        </g>
       </svg>
 
       <div style={{ marginTop: 6 }}>
