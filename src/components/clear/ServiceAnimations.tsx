@@ -519,136 +519,224 @@ export function AIAnim({ active }: { active: boolean }) {
 }
 
 /* ─────────────────────────── Process Automation ─────────────────────── */
-/* Manual workflow → Transitioning → Automated                             */
+/* n8n-style canvas: Idle → Wiring Up → Running                            */
 export function AutomationAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 2200, 1600, 2800);
+  const phase = usePhase(active, 1400, 1000, 1700);
 
+  const built   = phase >= 1;
+  const running = phase === 2;
+
+  const NW = 100; // node width
+  const NH = 44;  // node height
+
+  // Node definitions — x/y = top-left corner
   const nodes = [
-    { label: "New Lead", x: 20 },
-    { label: "Assign",   x: 100 },
-    { label: "Follow Up", x: 180 },
-    { label: "Closed",   x: 260 },
+    { id: "webhook", x: 8,   y: 40,  label: "Webhook",      sub: "Trigger",    color: "#E8504A", icon: "bolt"   },
+    { id: "filter",  x: 152, y: 40,  label: "IF Condition",  sub: "Logic",      color: B,         icon: "fork"   },
+    { id: "hubspot", x: 296, y: 6,   label: "HubSpot",       sub: "Update CRM", color: "#FF7A59", icon: "crm"    },
+    { id: "slack",   x: 296, y: 90,  label: "Slack",         sub: "Send alert", color: "#7B5EA7", icon: "bell"   },
   ];
 
-  const connectors = [
-    { x1: 58, x2: 100 },
-    { x1: 138, x2: 180 },
-    { x1: 218, x2: 260 },
+  // Bezier connections — right-handle → left-handle
+  const N1rx = 8   + NW;  const N1my = 40 + NH / 2; // 108, 62
+  const N2lx = 152;        const N2my = 40 + NH / 2; // 152, 62
+  const N2rx = 152 + NW;  // 252, 62
+  const N3lx = 296;        const N3my = 6  + NH / 2; // 296, 28
+  const N4lx = 296;        const N4my = 90 + NH / 2; // 296, 112
+
+  const conns = [
+    {
+      id: "1-2",
+      d: `M ${N1rx} ${N1my} C ${N1rx + 22} ${N1my} ${N2lx - 22} ${N2my} ${N2lx} ${N2my}`,
+      len: 150, delay: 0,
+    },
+    {
+      id: "2-3",
+      d: `M ${N2rx} ${N2my} C ${N2rx + 22} ${N2my} ${N3lx - 10} ${N3my} ${N3lx} ${N3my}`,
+      len: 130, delay: 0.12,
+    },
+    {
+      id: "2-4",
+      d: `M ${N2rx} ${N2my} C ${N2rx + 22} ${N2my} ${N4lx - 10} ${N4my} ${N4lx} ${N4my}`,
+      len: 130, delay: 0.22,
+    },
   ];
 
   return (
-    <div style={{ width: "100%", maxWidth: 320 }}>
-      <svg viewBox="0 0 320 160" style={{ width: "100%", display: "block", overflow: "visible" }}>
-        {/* Connector arrows */}
-        {connectors.map((c, i) => (
-          <g key={i}>
-            <line
-              x1={c.x1} y1="80" x2={c.x2} y2="80"
-              stroke={phase === 2 ? G : phase === 1 ? B : "rgba(255,255,255,0.15)"}
-              strokeWidth="1.5"
-              strokeDasharray="42"
-              strokeDashoffset={phase === 0 ? 42 : 0}
-              style={{ transition: `stroke-dashoffset .5s ease ${i * 0.1}s, stroke .4s ease` }}
-            />
-            {/* Arrow head */}
-            <polygon
-              points={`${c.x2},80 ${c.x2 - 6},76 ${c.x2 - 6},84`}
-              fill={phase === 2 ? G : phase === 1 ? B : "rgba(255,255,255,0.15)"}
-              style={{ transition: `fill .4s ease ${i * 0.1}s` }}
-            />
-          </g>
-        ))}
+    <div style={{ width: "100%", maxWidth: 450 }}>
+      {/* Canvas wrapper with dot-grid */}
+      <div style={{
+        borderRadius: 14,
+        overflow: "hidden",
+        border: "1px solid rgba(0,0,0,0.09)",
+        background: "#F7F8FA",
+        backgroundImage: "radial-gradient(circle, rgba(0,0,0,0.13) 1px, transparent 1px)",
+        backgroundSize: "14px 14px",
+        padding: "12px 8px 16px",
+      }}>
+        <svg viewBox="0 0 408 150" style={{ width: "100%", display: "block" }}>
 
-        {/* Data dots — phase 2 */}
-        {phase === 2 && connectors.map((c, i) => (
-          <circle key={i} r="3.5" fill={BL}>
-            <animateMotion dur="1.8s" begin={`${i * 0.6}s`} repeatCount="indefinite"
-              path={`M ${c.x1} 80 L ${c.x2} 80`} />
-            <animate attributeName="opacity" values="0;1;1;0" dur="1.8s" begin={`${i * 0.6}s`} repeatCount="indefinite" />
-          </circle>
-        ))}
-
-        {/* Nodes */}
-        {nodes.map((n, i) => {
-          const isAuto = phase === 2;
-          const isTransition = phase === 1;
-          const nodeColor = isAuto ? G : isTransition ? B : "oklch(0.65 0.18 50)";
-          const nodeBg = isAuto ? G + "18" : isTransition ? B + "14" : "oklch(0.65 0.18 50 / 0.12)";
-
-          return (
-            <g key={n.label}>
-              {/* Pulse ring — phase 1 */}
-              {isTransition && (
-                <circle cx={n.x + 19} cy="80" r="22" fill="none"
-                  stroke={B} strokeWidth="1" strokeOpacity="0.3">
-                  <animate attributeName="r" values="20;28;20" dur={`${1.2 + i * 0.2}s`} begin={`${i * 0.15}s`} repeatCount="indefinite" />
-                  <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur={`${1.2 + i * 0.2}s`} begin={`${i * 0.15}s`} repeatCount="indefinite" />
-                </circle>
-              )}
-
-              <rect x={n.x} y="62" width="38" height="36" rx="10"
-                fill={nodeBg}
-                stroke={nodeColor}
-                strokeWidth="1.2"
-                style={{ transition: `all .5s ease ${i * 0.1}s` }}
+          {/* ── Bezier connections ── */}
+          {conns.map((c) => (
+            <g key={c.id}>
+              {/* Track (always) */}
+              <path d={c.d} fill="none"
+                stroke="rgba(0,0,0,0.07)" strokeWidth="2" strokeLinecap="round" />
+              {/* Animated draw */}
+              <path d={c.d} fill="none"
+                stroke={running ? G : B}
+                strokeWidth="2" strokeLinecap="round"
+                strokeDasharray={c.len}
+                strokeDashoffset={built ? 0 : c.len}
+                style={{ transition: `stroke-dashoffset .42s ease ${c.delay}s, stroke .3s ease` }}
               />
-
-              {/* Icon — clock (manual) or lightning (auto) */}
-              {!isAuto ? (
-                // Clock icon
-                <g style={{ transition: `opacity .4s ease ${i * 0.1}s` }}>
-                  <circle cx={n.x + 19} cy="75" r="6"
-                    fill="none" stroke={nodeColor} strokeWidth="1.2" strokeOpacity="0.7" />
-                  <line x1={n.x + 19} y1="75" x2={n.x + 19} y2="71"
-                    stroke={nodeColor} strokeWidth="1.2" strokeOpacity="0.7" />
-                  <line x1={n.x + 19} y1="75" x2={n.x + 22} y2="75"
-                    stroke={nodeColor} strokeWidth="1.2" strokeOpacity="0.7" />
-                </g>
-              ) : (
-                // Lightning icon
-                <g style={{ transition: `opacity .4s ease ${i * 0.1}s` }}>
-                  <path
-                    d={`M ${n.x + 21} 68 L ${n.x + 16} 76 L ${n.x + 20} 76 L ${n.x + 17} 83 L ${n.x + 24} 73 L ${n.x + 19} 73 Z`}
-                    fill={GL} fillOpacity="0.9" stroke="none"
-                  />
-                </g>
-              )}
-
-              {/* Node label */}
-              <text x={n.x + 19} y="104" textAnchor="middle" fontSize="7.5"
-                fontFamily="Inter, sans-serif" fontWeight="600"
-                fill={isAuto ? GL : isTransition ? BL : "oklch(0.70 0.15 50)"}
-                style={{ transition: `fill .4s ease ${i * 0.1}s` }}>
-                {n.label}
-              </text>
-
-              {/* Sublabel */}
-              <text x={n.x + 19} y="113" textAnchor="middle" fontSize="6.5"
-                fontFamily="Inter, sans-serif"
-                fill={isAuto ? GL + "88" : "rgba(255,255,255,0.30)"}
-                style={{ transition: `fill .4s ease ${i * 0.1}s` }}>
-                {isAuto ? "auto" : "manual"}
-              </text>
             </g>
-          );
-        })}
+          ))}
 
-        {/* "Saving 6h/week" — phase 2 */}
-        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .5s ease .4s" }}>
-          <rect x="100" y="130" width="120" height="20" rx="10"
-            fill={G + "18"}
-            stroke={G + "50"}
-            strokeWidth="1"
-          />
-          <text x="160" y="143" textAnchor="middle" fontSize="8.5" fontWeight="700"
-            fontFamily="Inter, sans-serif" fill={GL}>
-            Saving 6h/week
-          </text>
-        </g>
-      </svg>
+          {/* ── Flowing data dots — phase 2 ── */}
+          {running && conns.map((c, i) => (
+            <circle key={c.id + "d"} r="4" fill={GL} opacity="0.9">
+              <animateMotion
+                dur={`${0.80 + i * 0.10}s`}
+                begin={`${i * 0.25}s`}
+                repeatCount="indefinite"
+                path={c.d}
+              />
+              <animate attributeName="opacity"
+                values="0;1;1;0" keyTimes="0;0.08;0.88;1"
+                dur={`${0.80 + i * 0.10}s`}
+                begin={`${i * 0.25}s`}
+                repeatCount="indefinite"
+              />
+            </circle>
+          ))}
 
-      <div style={{ marginTop: 6 }}>
-        <PhaseBar phase={phase} labels={["Manual", "Transitioning", "Automated"]} />
+          {/* ── Nodes ── */}
+          {nodes.map((n, i) => {
+            const icx = n.x + 16;          // icon centre x
+            const icy = n.y + NH / 2;      // icon centre y
+            const rhx = n.x + NW;          // right handle x
+            const hcy = n.y + NH / 2;      // handle centre y
+
+            return (
+              <g key={n.id}>
+
+                {/* White card */}
+                <rect x={n.x} y={n.y} width={NW} height={NH} rx="9"
+                  fill="#FFFFFF"
+                  stroke={built ? n.color + "55" : "rgba(0,0,0,0.10)"}
+                  strokeWidth="1.5"
+                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                />
+
+                {/* Icon strip — rounded-left, square-right */}
+                <rect x={n.x} y={n.y} width={32} height={NH} rx="9"
+                  fill={built ? n.color + "1C" : "rgba(0,0,0,0.04)"}
+                  style={{ transition: `fill .35s ease ${i * 0.07}s` }}
+                />
+                {/* Square off the right-side radius of strip */}
+                <rect x={n.x + 22} y={n.y} width={10} height={NH}
+                  fill={built ? n.color + "1C" : "rgba(0,0,0,0.04)"}
+                  style={{ transition: `fill .35s ease ${i * 0.07}s` }}
+                />
+                {/* Strip divider */}
+                <line x1={n.x + 32} y1={n.y + 7} x2={n.x + 32} y2={n.y + NH - 7}
+                  stroke={built ? n.color + "30" : "rgba(0,0,0,0.07)"}
+                  strokeWidth="1"
+                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                />
+
+                {/* ── Node icon ── */}
+                {n.icon === "bolt" && (
+                  <path
+                    d={`M ${icx+3} ${icy-8} L ${icx-3} ${icy+1} L ${icx+1} ${icy+1} L ${icx-2} ${icy+8} L ${icx+5} ${icy-1} L ${icx} ${icy-1} Z`}
+                    fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                    style={{ transition: `fill .35s ease ${i * 0.07}s` }}
+                  />
+                )}
+                {n.icon === "fork" && (
+                  <g stroke={built ? n.color : "rgba(0,0,0,0.18)"} strokeWidth="1.8"
+                    fill="none" strokeLinecap="round"
+                    style={{ transition: `stroke .35s ease ${i * 0.07}s` }}>
+                    <line x1={icx - 5} y1={icy} x2={icx} y2={icy} />
+                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy - 6} />
+                    <line x1={icx} y1={icy} x2={icx + 5} y2={icy + 6} />
+                  </g>
+                )}
+                {n.icon === "crm" && (
+                  <>
+                    <circle cx={icx} cy={icy} r="7.5"
+                      fill={built ? n.color + "22" : "rgba(0,0,0,0.05)"}
+                      style={{ transition: `fill .35s ease ${i * 0.07}s` }}
+                    />
+                    <text x={icx} y={icy + 3.5} textAnchor="middle"
+                      fontSize="9" fontWeight="700" fontFamily="Inter,sans-serif"
+                      fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                      style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
+                      H
+                    </text>
+                  </>
+                )}
+                {n.icon === "bell" && (
+                  <g fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                    style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
+                    <path d={`M ${icx} ${icy-8} C ${icx-6} ${icy-8} ${icx-6} ${icy+2} ${icx-6} ${icy+2} L ${icx+6} ${icy+2} C ${icx+6} ${icy+2} ${icx+6} ${icy-8} ${icx} ${icy-8} Z`} />
+                    <rect x={icx - 2} y={icy + 2} width={4} height={2.5} rx="1" />
+                    <rect x={icx - 1.2} y={icy + 4.5} width={2.4} height={2} rx="1" />
+                  </g>
+                )}
+
+                {/* Node name */}
+                <text x={n.x + 38} y={n.y + 17} fontSize="8" fontWeight="600"
+                  fontFamily="Inter, sans-serif"
+                  fill={built ? "rgba(0,0,0,0.78)" : "rgba(0,0,0,0.25)"}
+                  style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
+                  {n.label}
+                </text>
+                {/* Sub label */}
+                <text x={n.x + 38} y={n.y + 30} fontSize="7" fontWeight="500"
+                  fontFamily="Inter, sans-serif"
+                  fill={built ? n.color : "rgba(0,0,0,0.18)"}
+                  style={{ transition: `fill .35s ease ${i * 0.07}s` }}>
+                  {n.sub}
+                </text>
+
+                {/* Connection handles */}
+                <circle cx={n.x} cy={hcy} r="3.5"
+                  fill="#F7F8FA" stroke={built ? n.color : "rgba(0,0,0,0.14)"} strokeWidth="1.5"
+                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                />
+                <circle cx={rhx} cy={hcy} r="3.5"
+                  fill="#F7F8FA" stroke={built ? n.color : "rgba(0,0,0,0.14)"} strokeWidth="1.5"
+                  style={{ transition: `stroke .35s ease ${i * 0.07}s` }}
+                />
+
+                {/* Execution badge — running */}
+                <g style={{ opacity: running ? 1 : 0, transition: `opacity .3s ease ${i * 0.08}s` }}>
+                  <rect x={rhx - 10} y={n.y - 13} width="20" height="13" rx="6.5" fill={G} />
+                  <text x={rhx} y={n.y - 4} textAnchor="middle" fontSize="8" fontWeight="700"
+                    fontFamily="Inter, sans-serif" fill="white">✓</text>
+                </g>
+
+              </g>
+            );
+          })}
+
+          {/* ── "Saving 6h / week" badge — phase 2 ── */}
+          <g style={{ opacity: running ? 1 : 0, transition: "opacity .45s ease .3s" }}>
+            <rect x="134" y="123" width="140" height="20" rx="10"
+              fill={G + "18"} stroke={G + "45"} strokeWidth="1" />
+            <text x="204" y="136.5" textAnchor="middle" fontSize="8.5" fontWeight="700"
+              fontFamily="Inter, sans-serif" fill={GL}>
+              Saving 6h / week
+            </text>
+          </g>
+
+        </svg>
+      </div>
+
+      <div style={{ marginTop: 8 }}>
+        <PhaseBar phase={phase} labels={["Idle", "Wiring Up", "Running"]} />
       </div>
     </div>
   );
