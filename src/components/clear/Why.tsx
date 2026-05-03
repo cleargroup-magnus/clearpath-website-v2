@@ -72,7 +72,7 @@ function WhyCard({ item, index }: { item: (typeof items)[0]; index: number }) {
 
 export function Why() {
   return (
-    <section id="why" className="px-6 py-28 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
+    <section id="why" className="px-6 pt-24 pb-28 md:px-[72px]" style={{ background: "var(--why-bg)" }}>
       <div className="mx-auto mb-16 max-w-[780px] text-center">
         <div className="mb-5 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: "oklch(0.72 0.15 260)" }}>
           <span className="h-1.5 w-1.5 rounded-full bg-current" />

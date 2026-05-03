@@ -138,7 +138,7 @@ export function Process() {
       onMouseMove={handleMouseMove}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className="bg-navy px-6 py-28 md:px-[72px]"
+      className="bg-navy px-6 pt-28 pb-24 md:px-[72px]"
       style={{
         opacity: sectionVisible ? 1 : 0,
         transform: sectionVisible ? "translateY(0)" : "translateY(16px)",

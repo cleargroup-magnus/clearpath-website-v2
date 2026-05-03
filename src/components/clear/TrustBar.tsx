@@ -12,7 +12,7 @@ const track = [...items, ...items, ...items];
 
 export function TrustBar() {
   return (
-    <div className="relative overflow-hidden border-y border-border-soft bg-bg-soft py-7">
+    <div className="relative overflow-hidden border-y border-border-soft bg-bg-soft py-5">
       {/* Left fade */}
       <div
         aria-hidden="true"
