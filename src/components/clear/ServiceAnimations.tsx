@@ -550,7 +550,7 @@ export function IntegrationAnim({ active }: { active: boolean }) {
 /* ─────────────────────────── AI Integration ─────────────────────────── */
 /* Input docs → AI processing → Output results                             */
 export function AIAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 2000, 2200, 2400);
+  const phase = usePhase(active, 1400, 1500, 1800);
 
   const inputDocs = [
     { y: 38, label: "Data" },
@@ -573,7 +573,7 @@ export function AIAnim({ active }: { active: boolean }) {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: 320 }}>
+    <div style={{ width: "100%", maxWidth: 420 }}>
       <svg viewBox="0 0 320 180" style={{ width: "100%", display: "block", overflow: "visible" }}>
         {/* ── INPUT DOCS (left, x~40) ── */}
         {inputDocs.map((doc, i) => (
@@ -582,20 +582,20 @@ export function AIAnim({ active }: { active: boolean }) {
               fill="rgba(255,255,255,0.04)"
               stroke={phase >= 1 ? "rgba(255,255,255,0.45)" : "rgba(255,255,255,0.10)"}
               strokeWidth="1"
-              style={{ transition: `stroke .5s ease ${i * 0.1}s` }}
+              style={{ transition: `stroke .38s ease ${i * 0.08}s` }}
             />
             {/* Text lines */}
             <rect x="14" y={doc.y + 6} width="40" height="4" rx="2"
               fill={phase >= 1 ? "rgba(255,255,255,0.38)" : "rgba(255,255,255,0.10)"}
-              style={{ transition: `fill .5s ease ${i * 0.1}s` }}
+              style={{ transition: `fill .38s ease ${i * 0.08}s` }}
             />
             <rect x="14" y={doc.y + 13} width="32" height="3" rx="1.5"
               fill={phase >= 1 ? "rgba(255,255,255,0.22)" : "rgba(255,255,255,0.06)"}
-              style={{ transition: `fill .5s ease ${i * 0.1 + 0.05}s` }}
+              style={{ transition: `fill .38s ease ${i * 0.08 + 0.04}s` }}
             />
             <rect x="14" y={doc.y + 19} width="44" height="3" rx="1.5"
               fill={phase >= 1 ? "rgba(255,255,255,0.14)" : "rgba(255,255,255,0.04)"}
-              style={{ transition: `fill .5s ease ${i * 0.1 + 0.1}s` }}
+              style={{ transition: `fill .38s ease ${i * 0.08 + 0.08}s` }}
             />
           </g>
         ))}
@@ -607,7 +607,7 @@ export function AIAnim({ active }: { active: boolean }) {
           strokeDasharray="40"
           strokeDashoffset={phase >= 1 ? 0 : 40}
           markerEnd="url(#arrow-ai)"
-          style={{ transition: "stroke-dashoffset .5s ease, stroke .4s ease" }}
+          style={{ transition: "stroke-dashoffset .38s ease, stroke .3s ease" }}
         />
 
         {/* Arrow center → right */}
@@ -617,7 +617,7 @@ export function AIAnim({ active }: { active: boolean }) {
           strokeDasharray="36"
           strokeDashoffset={phase === 2 ? 0 : 36}
           markerEnd="url(#arrow-ai-out)"
-          style={{ transition: "stroke-dashoffset .5s ease .2s, stroke .4s ease" }}
+          style={{ transition: "stroke-dashoffset .38s ease .15s, stroke .3s ease" }}
         />
 
         {/* Arrow markers */}
@@ -640,10 +640,10 @@ export function AIAnim({ active }: { active: boolean }) {
           style={{ transition: "stroke-opacity .4s ease" }}
         >
           {phase === 1 && (
-            <animate attributeName="r" values="34;48;34" dur="1.6s" repeatCount="indefinite" />
+            <animate attributeName="r" values="34;48;34" dur="1.1s" repeatCount="indefinite" />
           )}
           {phase === 1 && (
-            <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.6s" repeatCount="indefinite" />
+            <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.1s" repeatCount="indefinite" />
           )}
         </circle>
 
@@ -652,27 +652,27 @@ export function AIAnim({ active }: { active: boolean }) {
           fill={phase >= 1 ? "rgba(255,255,255,0.08)" : "rgba(255,255,255,0.04)"}
           stroke={phase >= 1 ? "rgba(255,255,255,0.80)" : "rgba(255,255,255,0.15)"}
           strokeWidth="1.5"
-          style={{ transition: "fill .5s ease, stroke .5s ease" }}
+          style={{ transition: "fill .38s ease, stroke .38s ease" }}
         />
         <text x="160" y="87" textAnchor="middle" fontSize="11" fontWeight="700"
           fontFamily="Inter, sans-serif"
           fill={phase >= 1 ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.35)"}
-          style={{ transition: "fill .5s ease" }}>
+          style={{ transition: "fill .38s ease" }}>
           AI
         </text>
         <text x="160" y="99" textAnchor="middle" fontSize="7"
           fontFamily="Inter, sans-serif"
           fill={phase >= 1 ? "rgba(255,255,255,0.52)" : "rgba(255,255,255,0.20)"}
-          style={{ transition: "fill .5s ease" }}>
+          style={{ transition: "fill .38s ease" }}>
           {phase === 1 ? "processing" : phase === 2 ? "complete" : "idle"}
         </text>
 
         {/* Particles left → center — phase 1 */}
         {phase === 1 && [0, 1, 2].map((i) => (
           <circle key={i} r="3" fill="rgba(255,255,255,0.88)">
-            <animateMotion dur="1.2s" begin={`${i * 0.4}s`} repeatCount="indefinite"
+            <animateMotion dur="0.85s" begin={`${i * 0.28}s`} repeatCount="indefinite"
               path="M 78 90 L 132 90" />
-            <animate attributeName="opacity" values="0;1;1;0" dur="1.2s" begin={`${i * 0.4}s`} repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0;1;1;0" dur="0.85s" begin={`${i * 0.28}s`} repeatCount="indefinite" />
           </circle>
         ))}
 
@@ -680,7 +680,7 @@ export function AIAnim({ active }: { active: boolean }) {
         {outputItems.map((item, i) => (
           <g key={i} style={{
             opacity: phase === 2 ? 1 : 0,
-            transition: `opacity .4s ease ${i * 0.15 + 0.2}s`,
+            transition: `opacity .35s ease ${i * 0.10 + 0.12}s`,
           }}>
             <rect x="244" y={item.y} width="68" height="26" rx="6"
               fill={G + "12"}
@@ -704,7 +704,7 @@ export function AIAnim({ active }: { active: boolean }) {
         ))}
 
         {/* "3.5h saved/day" label — phase 2 */}
-        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .5s ease .5s" }}>
+        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .4s ease .3s" }}>
           <rect x="214" y="136" width="100" height="20" rx="10"
             fill={G + "18"}
             stroke={G + "50"}
