@@ -49,7 +49,6 @@ function Index() {
         <Process />
 
         {/* 6 — Why us */}
-        <SectionLabel>Why ClearScaler</SectionLabel>
         <Why />
 
         {/* 7 — CTA */}
