@@ -249,17 +249,6 @@ export function WebDevAnim({ active }: { active: boolean }) {
             fill={built ? "white" : "transparent"}
             style={{ transition: "fill .5s ease .2s" }}>Book call</text>
 
-          {/* Live: floating metric badge */}
-          <g style={{ opacity: live ? 1 : 0, transition: "opacity .4s ease .3s" }}>
-            <rect x="240" y="97" width="64" height="18" rx="9"
-              fill={G + "22"} stroke={G + "55"} strokeWidth="1"
-            />
-            <circle cx="249" cy="106" r="3.5" fill={G}>
-              <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
-            </circle>
-            <text x="266" y="109.5" textAnchor="middle" fontSize="6.5" fontWeight="700"
-              fontFamily="Inter, sans-serif" fill={G}>+82% leads</text>
-          </g>
         </g>
 
         {/* ── SECTION DIVIDER + LABEL ── */}
