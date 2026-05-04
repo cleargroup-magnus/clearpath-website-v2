@@ -60,7 +60,7 @@ export function CTA() {
         <p className="relative z-10 mt-4 text-[12px] text-white/40">
           No pressure. No commitment.{" "}
           <a
-            href="mailto:magnus@clearcruit.com"
+            href="mailto:magnus@clearscaler.com"
             className="text-white/60 underline decoration-white/20 underline-offset-4 transition-colors hover:text-blue-light"
           >
             Or email us instead.

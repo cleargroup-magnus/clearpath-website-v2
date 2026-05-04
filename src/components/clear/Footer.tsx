@@ -12,7 +12,7 @@ export function Footer() {
         <a href="#process" className="text-[13px] text-text-muted transition-colors hover:text-blue">
           Process
         </a>
-        <a href="mailto:magnus@clearcruit.com" className="text-[13px] text-text-muted transition-colors hover:text-blue">
+        <a href="mailto:magnus@clearscaler.com" className="text-[13px] text-text-muted transition-colors hover:text-blue">
           Contact
         </a>
       </div>

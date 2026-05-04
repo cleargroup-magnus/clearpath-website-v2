@@ -61,7 +61,7 @@ function ContactPage() {
                 {/* Direct contact */}
                 <div className="mb-10 flex flex-col gap-3">
                   <a
-                    href="mailto:magnus@clearcruit.com"
+                    href="mailto:magnus@clearscaler.com"
                     className="inline-flex items-center gap-2.5 text-[14px] font-medium text-text-muted transition-colors hover:text-blue"
                   >
                     <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-soft bg-bg-soft text-text-light">
@@ -70,7 +70,7 @@ function ContactPage() {
                         <polyline points="22,6 12,13 2,6" />
                       </svg>
                     </span>
-                    magnus@clearcruit.com
+                    magnus@clearscaler.com
                   </a>
                   <a
                     href="https://wa.me/447000000000"
