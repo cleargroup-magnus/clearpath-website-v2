@@ -37,19 +37,19 @@ function AboutPage() {
             <div>
               <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Kian</div>
               <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
-                Kian brings the systems thinking. He's obsessive about automation, data flow, and building infrastructure that scales. His instinct is always: what's the process, and how do we make it run without anyone touching it?
+                Kian has worked across sales, marketing, and recruitment, while building on the tech and web side and running paid ads through agency work. Over time, he moved away from just executing and focused more on how everything connects.
               </p>
               <p className="text-[16px] leading-[1.8] text-text-muted">
-                He's spent years building workflows for B2B companies that didn't know how many hours they were wasting until the problem disappeared.
+                He looks at growth as a system. How data flows, how processes are built, and how things can run without constant manual input. That's usually where things break, and where he focuses.
               </p>
             </div>
             <div>
               <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Magnus</div>
               <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
-                Magnus runs the growth side. Web, ads, GTM strategy, outbound. He cares about one thing: whether what we're building is actually bringing in revenue. Not impressions, not traffic. Revenue.
+                Magnus has worked in sales, recruiting, logistics, and customer success. Different roles, but all close to the front line of the business.
               </p>
               <p className="text-[16px] leading-[1.8] text-text-muted">
-                He's the one who'll tell you the uncomfortable truth about why your campaign isn't converting, and exactly what to do about it.
+                He focuses on what actually drives revenue. Messaging, outbound, and execution. Most companies don't lack effort, they lack alignment, and that's where he does his best work.
               </p>
             </div>
           </div>
@@ -60,17 +60,14 @@ function AboutPage() {
           <div className="mx-auto max-w-[720px]">
             <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Why we started</div>
             <h2 className="mb-6 font-display text-[clamp(24px,3vw,38px)] font-medium leading-tight tracking-tight text-text-base">
-              We got tired of seeing the same gap.
+              We got tired of seeing the same gaps.
             </h2>
             <div className="space-y-4 text-[16px] leading-[1.8] text-text-muted">
               <p>
-                Every business we worked with before starting ClearScaler had the same problem underneath. Marketing running in one corner, ops in another, no one sure what was actually working. Agencies delivering reports instead of results. Tools that were "integrated" but never really talking.
+                After working across enough companies and industries, we kept seeing the same thing. Sales and marketing not talking. Tools that don't connect. Good businesses leaving money on the table because nothing is joined up.
               </p>
               <p>
-                We started ClearScaler to be the team that sits in the middle of all of it. Not a web agency, not a media buyer, not an automation shop. One team that owns the whole picture and stays accountable to what matters: growth.
-              </p>
-              <p>
-                We work with a small number of clients at a time. That's not a limitation. It's the point.
+                ClearScaler exists because we knew we could help fix that. Our team handles the execution across development, automation, paid media, and outbound. Our job is to understand your business, find where the gaps are, and help you close them.
               </p>
             </div>
           </div>
