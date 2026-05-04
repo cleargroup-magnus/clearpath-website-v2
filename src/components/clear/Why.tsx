@@ -76,7 +76,7 @@ export function Why() {
       <div className="mx-auto mb-10 max-w-[780px] text-center">
         <div className="mb-5 inline-flex items-center gap-2 text-[13px] font-medium" style={{ color: "oklch(0.72 0.15 260)" }}>
           <span className="h-1.5 w-1.5 rounded-full bg-current" />
-          Why clear.group
+          Why ClearScaler
         </div>
         <h2 className="mb-5 font-display font-medium leading-[1.05] tracking-[-0.035em]"
           style={{ fontSize: "clamp(36px, 5vw, 58px)", color: "rgba(255,255,255,0.95)" }}>

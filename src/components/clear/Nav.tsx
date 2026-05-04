@@ -28,7 +28,7 @@ export function Nav() {
   return (
     <>
       <nav className="fixed inset-x-0 top-0 z-50 flex h-[72px] items-center justify-between border-b border-border-soft bg-background/90 px-6 backdrop-blur-2xl md:px-12 lg:px-[72px]">
-        <Link to="/" aria-label="clear.group home">
+        <Link to="/" aria-label="ClearScaler home">
           <Logo />
         </Link>
 

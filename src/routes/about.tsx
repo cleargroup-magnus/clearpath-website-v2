@@ -26,7 +26,7 @@ function AboutPage() {
               <span className="text-blue">get let down.</span>
             </h1>
             <p className="max-w-[580px] text-[17px] leading-[1.75] text-text-muted">
-              clear.group is Kian and Magnus. We built this because we kept seeing the same thing: smart companies stuck not for lack of ideas, but because nothing was connected, nothing was moving.
+              ClearScaler is Kian and Magnus. We built this because we kept seeing the same thing: smart companies stuck not for lack of ideas, but because nothing was connected, nothing was moving.
             </p>
           </div>
         </section>
@@ -64,10 +64,10 @@ function AboutPage() {
             </h2>
             <div className="space-y-4 text-[16px] leading-[1.8] text-text-muted">
               <p>
-                Every business we worked with before starting clear.group had the same problem underneath. Marketing running in one corner, ops in another, no one sure what was actually working. Agencies delivering reports instead of results. Tools that were "integrated" but never really talking.
+                Every business we worked with before starting ClearScaler had the same problem underneath. Marketing running in one corner, ops in another, no one sure what was actually working. Agencies delivering reports instead of results. Tools that were "integrated" but never really talking.
               </p>
               <p>
-                We started clear.group to be the team that sits in the middle of all of it. Not a web agency, not a media buyer, not an automation shop. One team that owns the whole picture and stays accountable to what matters: growth.
+                We started ClearScaler to be the team that sits in the middle of all of it. Not a web agency, not a media buyer, not an automation shop. One team that owns the whole picture and stays accountable to what matters: growth.
               </p>
               <p>
                 We work with a small number of clients at a time. That's not a limitation. It's the point.
