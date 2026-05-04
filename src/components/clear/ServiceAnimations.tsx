@@ -1103,35 +1103,30 @@ export function GTMAnim({ active }: { active: boolean }) {
 
   const centerX = 150, centerY = 100, NR = 19;
 
+  // bg  = node circle fill (dark so coloured icons pop)
+  // border = accent/stroke colour, also used for outbound data dots
   const outerNodes = [
-    { label: "Clay",      cx: 150, cy: 22,  color: "#7C3AED", mark: "C"  },
-    { label: "Apollo",    cx: 258, cy: 61,  color: "#2563EB", mark: "A"  },
-    { label: "Instantly", cx: 258, cy: 139, color: "#0EA5E9", mark: "⚡" },
-    { label: "Lemlist",   cx: 150, cy: 178, color: "#E11D48", mark: "L"  },
-    { label: "HubSpot",   cx: 42,  cy: 139, color: "#FF7A59", mark: "H"  },
-    { label: "n8n",       cx: 42,  cy: 61,  color: "#EA4B25", mark: "n8" },
+    { label: "Clay",      cx: 150, cy: 22,  bg: "#0C1826", border: "#0BBCDB" },
+    { label: "Apollo",    cx: 258, cy: 61,  bg: "#13192B", border: "#FFD93D" },
+    { label: "Instantly", cx: 258, cy: 139, bg: "#2563EB", border: "#93C0FF" },
+    { label: "Lemlist",   cx: 150, cy: 178, bg: "#3B5BFF", border: "#8FA8FF" },
+    { label: "HubSpot",   cx: 42,  cy: 139, bg: "#FF7A59", border: "#FFD4C8" },
+    { label: "n8n",       cx: 42,  cy: 61,  bg: "#EA4B25", border: "#FFB09A" },
   ];
 
   const spokeLen = (n: typeof outerNodes[0]) =>
     Math.sqrt((n.cx - centerX) ** 2 + (n.cy - centerY) ** 2);
 
-  // Label positions — placed radially, respecting available space:
-  // · Clay (top): label below circle (toward center, avoids negative y)
-  // · Lemlist (bottom): label below circle (uses viewBox extension)
-  // · All 4 side nodes: label ABOVE their circle — keeps them clear of
-  //   Lemlist's circle and from each other
+  // Label positions — placed radially, respecting available space
   const labelY = (n: typeof outerNodes[0]) => {
-    if (n.cy < centerY) return n.cy - NR - 10; // top half → above
-    if (n.cx === centerX) return n.cy + NR + 13; // pure bottom → below
-    return n.cy - NR - 10; // lower-side nodes → above (away from bottom cluster)
+    if (n.cy < centerY) return n.cy - NR - 10;
+    if (n.cx === centerX) return n.cy + NR + 13;
+    return n.cy - NR - 10;
   };
-  // Clay is the exception: it's the top node but we place label below
-  // (between Clay and center) so it stays within comfortable bounds
-  const clayLabelY = outerNodes[0].cy + NR + 11; // = 22 + 30 = 52
+  const clayLabelY = outerNodes[0].cy + NR + 11;
 
   return (
     <div style={{ width: "100%", maxWidth: 300, overflow: "visible" }}>
-      {/* viewBox extended 14px at top (for Clay label) + 18px at bottom (for Lemlist label) */}
       <svg viewBox="0 -14 300 222" style={{ width: "100%", display: "block", overflow: "visible" }}>
 
         {/* ── Spokes ── */}
@@ -1152,7 +1147,7 @@ export function GTMAnim({ active }: { active: boolean }) {
         {/* ── Data dots — phase 2, bidirectional ── */}
         {phase === 2 && outerNodes.map((n, i) => (
           <g key={i}>
-            <circle r="2.5" fill={n.color}>
+            <circle r="2.5" fill={n.border}>
               <animateMotion dur="2s" begin={`${i * 0.5}s`} repeatCount="indefinite"
                 path={`M ${centerX} ${centerY} L ${n.cx} ${n.cy}`} />
               <animate attributeName="opacity" values="0;1;1;0" dur="2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
@@ -1171,22 +1166,90 @@ export function GTMAnim({ active }: { active: boolean }) {
           const ly = isClay ? clayLabelY : labelY(n);
           return (
             <g key={n.label}>
-              {/* Brand circle */}
+              {/* Node circle — dark bg so icons pop */}
               <circle cx={n.cx} cy={n.cy} r={NR}
-                fill={phase >= 1 ? n.color : "rgba(255,255,255,0.04)"}
-                stroke={phase >= 1 ? n.color + "70" : "rgba(255,255,255,0.12)"}
+                fill={phase >= 1 ? n.bg : "rgba(255,255,255,0.04)"}
+                stroke={phase >= 1 ? n.border + "70" : "rgba(255,255,255,0.12)"}
                 strokeWidth="1.5"
                 style={{ transition: `fill .45s ease ${i * 0.1}s, stroke .45s ease ${i * 0.1}s` }}
               />
-              {/* Letter mark — vertically centred in circle */}
-              <text x={n.cx} y={n.cy + 4.5} textAnchor="middle"
-                fontSize={n.mark === "n8" ? "9" : "11"}
-                fontFamily="Inter, sans-serif" fontWeight="800"
-                fill={phase >= 1 ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.15)"}
-                style={{ transition: `fill .45s ease ${i * 0.1}s` }}>
-                {n.mark}
-              </text>
-              {/* Tool name — consistently positioned, same size/weight for all */}
+
+              {/* ── Brand icons (fade in with phase) ── */}
+              <g style={{ opacity: phase >= 1 ? 1 : 0.12, transition: `opacity .45s ease ${i * 0.1}s` }}>
+
+                {/* Clay — nested arches: sky-blue, salmon, yellow */}
+                {n.label === "Clay" && (
+                  <g transform={`translate(${n.cx},${n.cy + 2})`}>
+                    <path d="M -8,4 A 8,8 0 0 1 8,4"   fill="none" stroke="#28BFDE" strokeWidth="3.5" strokeLinecap="round"/>
+                    <path d="M -5,4 A 5,5 0 0 1 5,4"     fill="none" stroke="#FF8585" strokeWidth="3.0" strokeLinecap="round"/>
+                    <path d="M -2.2,4 A 2.2,2.2 0 0 1 2.2,4" fill="none" stroke="#FFD93D" strokeWidth="2.8" strokeLinecap="round"/>
+                  </g>
+                )}
+
+                {/* Apollo — yellow 8-pointed asterisk */}
+                {n.label === "Apollo" && (
+                  <g transform={`translate(${n.cx},${n.cy})`}>
+                    {[0,1,2,3,4,5,6,7].map(k => (
+                      <path key={k}
+                        transform={`rotate(${k * 45})`}
+                        d="M 0,-7.5 L 1.4,-2.5 L -1.4,-2.5 Z"
+                        fill="#FFD93D"
+                      />
+                    ))}
+                  </g>
+                )}
+
+                {/* Instantly — white lightning bolt on blue node */}
+                {n.label === "Instantly" && (
+                  <path
+                    transform={`translate(${n.cx},${n.cy})`}
+                    d="M 1.5,-7 L -2.5,0.5 L 0.5,0.5 L -1.5,7 L 3.5,-0.5 L 0.5,-0.5 Z"
+                    fill="rgba(255,255,255,0.95)"
+                  />
+                )}
+
+                {/* Lemlist — white LE monogram: bold L curve + two horizontal bars */}
+                {n.label === "Lemlist" && (
+                  <g transform={`translate(${n.cx},${n.cy - 0.5})`}>
+                    {/* L: thick rounded path — vertical bar curving into bottom tail */}
+                    <path d="M -6.5,-7.5 L -6.5,4.5 Q -6.5,7.5 -3.5,7.5 L 2,7.5"
+                      fill="none" stroke="white" strokeWidth="4.5"
+                      strokeLinecap="round" strokeLinejoin="round"/>
+                    {/* E: upper bar */}
+                    <rect x="-3.5" y="-7.5" width="9.5" height="3.8" rx="1.9" fill="white"/>
+                    {/* E: middle bar (slightly shorter) */}
+                    <rect x="-3.5" y="-0.8" width="8" height="3.8" rx="1.9" fill="white"/>
+                  </g>
+                )}
+
+                {/* HubSpot — white sprocket: center circle + 3 arms + endpoint dots */}
+                {n.label === "HubSpot" && (
+                  <g transform={`translate(${n.cx},${n.cy})`}>
+                    <circle r="3" fill="white"/>
+                    <line x1="0" y1="-3" x2="0" y2="-6.5"     stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                    <circle cx="0"    cy="-9"  r="2.2" fill="white"/>
+                    <line x1="2.6" y1="1.5" x2="5.6" y2="3.2"  stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                    <circle cx="7.3"  cy="4.2" r="2.2" fill="white"/>
+                    <line x1="-2.6" y1="1.5" x2="-5.6" y2="3.2" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+                    <circle cx="-7.3" cy="4.2" r="2.2" fill="white"/>
+                  </g>
+                )}
+
+                {/* n8n — white node-graph icon: ●—● branching to two ● */}
+                {n.label === "n8n" && (
+                  <g transform={`translate(${n.cx},${n.cy})`}>
+                    <circle cx="-7"   cy="0"    r="2.5" fill="none" stroke="white" strokeWidth="1.5"/>
+                    <circle cx="-1.5" cy="0"    r="2.5" fill="none" stroke="white" strokeWidth="1.5"/>
+                    <line x1="-4.5" y1="0" x2="-4" y2="0" stroke="white" strokeWidth="1.5"/>
+                    <path d="M 1,0 C 3.5,0 3.5,-4.5 5,-4.5" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <path d="M 1,0 C 3.5,0 3.5,4.5 5,4.5"  fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
+                    <circle cx="7.2" cy="-4.5" r="2.2" fill="none" stroke="white" strokeWidth="1.5"/>
+                    <circle cx="7.2" cy="4.5"  r="2.2" fill="none" stroke="white" strokeWidth="1.5"/>
+                  </g>
+                )}
+              </g>
+
+              {/* Tool name label */}
               <text x={n.cx} y={ly} textAnchor="middle"
                 fontSize="7.5" fontFamily="Inter, sans-serif" fontWeight="600"
                 letterSpacing="0.01em"
