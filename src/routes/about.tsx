@@ -22,35 +22,82 @@ function AboutPage() {
               className="mb-5 font-display font-medium leading-[1.05] tracking-[-0.035em] text-text-base"
               style={{ fontSize: "clamp(34px, 5vw, 56px)" }}
             >
-              Two people who got tired of watching good businesses{" "}
-              <span className="text-blue">get let down.</span>
+              Kian and Magnus.{" "}
+              <span className="text-blue">Between us, we have been on every side of the table.</span>
             </h1>
             <p className="max-w-[580px] text-[17px] leading-[1.75] text-text-muted">
-              ClearScaler is Kian and Magnus. We built this because we kept seeing the same thing: smart companies stuck not for lack of ideas, but because nothing was connected, nothing was moving.
+              Sales, recruiting, operations, development, paid media. We have done the work ourselves, and that shapes how we approach every client we take on.
             </p>
           </div>
         </section>
 
         {/* Who we are */}
         <section className="bg-background px-6 py-16 md:px-[72px]">
-          <div className="mx-auto grid max-w-[1080px] grid-cols-1 gap-12 md:grid-cols-2 md:gap-20">
-            <div>
-              <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Kian</div>
-              <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
-                Kian has worked across sales, marketing, and recruitment, while building on the tech and web side and running paid ads through agency work. Over time, he moved away from just executing and focused more on how everything connects.
-              </p>
-              <p className="text-[16px] leading-[1.8] text-text-muted">
-                He looks at growth as a system. How data flows, how processes are built, and how things can run without constant manual input. That's usually where things break, and where he focuses.
-              </p>
+          <div className="mx-auto grid max-w-[1080px] grid-cols-1 gap-10 md:grid-cols-2 md:gap-16">
+            {/* Kian */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-5">
+                <img
+                  src="/images/kian.jpg"
+                  alt="Kian"
+                  className="h-[72px] w-[72px] rounded-2xl object-cover object-top"
+                />
+                <div>
+                  <div className="text-[17px] font-semibold tracking-tight text-text-base">Kian</div>
+                  <a
+                    href="https://www.linkedin.com/in/kian-k-27b916199/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-blue hover:underline"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                  </a>
+                </div>
+              </div>
+              <div>
+                <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
+                  Kian has worked across sales, marketing, and recruitment, while building on the tech and web side and running paid ads through agency work. Over time, he moved away from just executing and focused more on how everything connects.
+                </p>
+                <p className="text-[16px] leading-[1.8] text-text-muted">
+                  He looks at growth as a system. How data flows, how processes are built, and how things can run without constant manual input. That's usually where things break, and where he focuses.
+                </p>
+              </div>
             </div>
-            <div>
-              <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Magnus</div>
-              <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
-                Magnus has worked in sales, recruiting, logistics, and customer success. Different roles, but all close to the front line of the business.
-              </p>
-              <p className="text-[16px] leading-[1.8] text-text-muted">
-                He focuses on what actually drives revenue. Messaging, outbound, and execution. Most companies don't lack effort, they lack alignment, and that's where he does his best work.
-              </p>
+
+            {/* Magnus */}
+            <div className="flex flex-col gap-6">
+              <div className="flex items-center gap-5">
+                <img
+                  src="/images/magnus.jpg"
+                  alt="Magnus"
+                  className="h-[72px] w-[72px] rounded-2xl object-cover object-top"
+                />
+                <div>
+                  <div className="text-[17px] font-semibold tracking-tight text-text-base">Magnus</div>
+                  <a
+                    href="https://www.linkedin.com/in/magnus-motzfeldt-berge-9961b7183/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-[13px] font-medium text-blue hover:underline"
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                    LinkedIn
+                  </a>
+                </div>
+              </div>
+              <div>
+                <p className="mb-4 text-[16px] leading-[1.8] text-text-muted">
+                  Magnus has worked in sales, recruiting, logistics, and customer success. Different roles, but all close to the front line of the business.
+                </p>
+                <p className="text-[16px] leading-[1.8] text-text-muted">
+                  He focuses on what actually drives revenue. Messaging, outbound, and execution. Most companies don't lack effort, they lack alignment, and that's where he does his best work.
+                </p>
+              </div>
             </div>
           </div>
         </section>
