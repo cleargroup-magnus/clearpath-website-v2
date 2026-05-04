@@ -1101,6 +1101,8 @@ export function AdsAnim({ active }: { active: boolean }) {
 export function GTMAnim({ active }: { active: boolean }) {
   const phase = usePhase(active, 1800, 2200, 3000);
 
+  const centerX = 150, centerY = 100, NR = 19;
+
   const outerNodes = [
     { label: "Clay",      cx: 150, cy: 22,  color: "#7C3AED", mark: "C"  },
     { label: "Apollo",    cx: 258, cy: 61,  color: "#2563EB", mark: "A"  },
@@ -1110,48 +1112,52 @@ export function GTMAnim({ active }: { active: boolean }) {
     { label: "n8n",       cx: 42,  cy: 61,  color: "#EA4B25", mark: "n8" },
   ];
 
-  const centerX = 150;
-  const centerY = 100;
+  const spokeLen = (n: typeof outerNodes[0]) =>
+    Math.sqrt((n.cx - centerX) ** 2 + (n.cy - centerY) ** 2);
 
-  const spokeLen = (n: typeof outerNodes[0]) => {
-    const dx = n.cx - centerX;
-    const dy = n.cy - centerY;
-    return Math.sqrt(dx * dx + dy * dy);
+  // Label positions — placed radially, respecting available space:
+  // · Clay (top): label below circle (toward center, avoids negative y)
+  // · Lemlist (bottom): label below circle (uses viewBox extension)
+  // · All 4 side nodes: label ABOVE their circle — keeps them clear of
+  //   Lemlist's circle and from each other
+  const labelY = (n: typeof outerNodes[0]) => {
+    if (n.cy < centerY) return n.cy - NR - 10; // top half → above
+    if (n.cx === centerX) return n.cy + NR + 13; // pure bottom → below
+    return n.cy - NR - 10; // lower-side nodes → above (away from bottom cluster)
   };
+  // Clay is the exception: it's the top node but we place label below
+  // (between Clay and center) so it stays within comfortable bounds
+  const clayLabelY = outerNodes[0].cy + NR + 11; // = 22 + 30 = 52
 
   return (
-    <div style={{ width: "100%", maxWidth: 300 }}>
-      <svg viewBox="0 0 300 200" style={{ width: "100%", display: "block", overflow: "visible" }}>
-        {/* Spokes */}
+    <div style={{ width: "100%", maxWidth: 300, overflow: "visible" }}>
+      {/* viewBox extended 14px at top (for Clay label) + 18px at bottom (for Lemlist label) */}
+      <svg viewBox="0 -14 300 222" style={{ width: "100%", display: "block", overflow: "visible" }}>
+
+        {/* ── Spokes ── */}
         {outerNodes.map((n, i) => {
           const len = spokeLen(n);
           return (
             <line key={i}
-              x1={centerX} y1={centerY}
-              x2={n.cx} y2={n.cy}
+              x1={centerX} y1={centerY} x2={n.cx} y2={n.cy}
               stroke={phase === 2 ? G : B}
               strokeWidth="1.3"
-              strokeDasharray={len}
-              strokeDashoffset={phase >= 1 ? 0 : len}
-              strokeOpacity={phase >= 1 ? 0.45 : 0}
-              style={{
-                transition: `stroke-dashoffset .55s ease ${i * 0.1}s, stroke-opacity .5s ease ${i * 0.1}s, stroke .4s ease`,
-              }}
+              strokeDasharray={len} strokeDashoffset={phase >= 1 ? 0 : len}
+              strokeOpacity={phase >= 1 ? 0.42 : 0}
+              style={{ transition: `stroke-dashoffset .55s ease ${i * 0.1}s, stroke-opacity .5s ease ${i * 0.1}s, stroke .4s ease` }}
             />
           );
         })}
 
-        {/* Data dots — phase 2, bidirectional, brand-colored */}
+        {/* ── Data dots — phase 2, bidirectional ── */}
         {phase === 2 && outerNodes.map((n, i) => (
           <g key={i}>
-            {/* Center → tool */}
-            <circle r="3" fill={n.color}>
+            <circle r="2.5" fill={n.color}>
               <animateMotion dur="2s" begin={`${i * 0.5}s`} repeatCount="indefinite"
                 path={`M ${centerX} ${centerY} L ${n.cx} ${n.cy}`} />
               <animate attributeName="opacity" values="0;1;1;0" dur="2s" begin={`${i * 0.5}s`} repeatCount="indefinite" />
             </circle>
-            {/* Tool → center */}
-            <circle r="3" fill="rgba(255,255,255,0.85)">
+            <circle r="2.5" fill="rgba(255,255,255,0.80)">
               <animateMotion dur="2s" begin={`${i * 0.5 + 1}s`} repeatCount="indefinite"
                 path={`M ${n.cx} ${n.cy} L ${centerX} ${centerY}`} />
               <animate attributeName="opacity" values="0;1;1;0" dur="2s" begin={`${i * 0.5 + 1}s`} repeatCount="indefinite" />
@@ -1159,77 +1165,99 @@ export function GTMAnim({ active }: { active: boolean }) {
           </g>
         ))}
 
-        {/* Outer nodes — brand-colored filled circles */}
-        {outerNodes.map((n, i) => (
-          <g key={n.label}>
-            {/* Filled brand circle */}
-            <circle cx={n.cx} cy={n.cy} r="19"
-              fill={phase >= 1 ? n.color : "rgba(255,255,255,0.04)"}
-              stroke={phase >= 1 ? n.color + "80" : "rgba(255,255,255,0.12)"}
-              strokeWidth="1.5"
-              style={{ transition: `fill .45s ease ${i * 0.1}s, stroke .45s ease ${i * 0.1}s` }}
-            />
-            {/* White letter/mark */}
-            <text x={n.cx} y={n.cy + 4} textAnchor="middle"
-              fontSize={n.mark === "n8" ? "9" : n.mark === "⚡" ? "12" : "11"}
-              fontFamily="Inter, sans-serif" fontWeight="800"
-              fill={phase >= 1 ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.18)"}
-              style={{ transition: `fill .45s ease ${i * 0.1}s` }}>
-              {n.mark}
-            </text>
-            {/* Tool name label below circle */}
-            <text x={n.cx} y={n.cy + 32} textAnchor="middle"
-              fontSize="7" fontFamily="Inter, sans-serif" fontWeight="600"
-              fill={phase >= 1 ? "rgba(255,255,255,0.70)" : "rgba(255,255,255,0.18)"}
-              style={{ transition: `fill .45s ease ${i * 0.1}s` }}>
-              {n.label}
-            </text>
-          </g>
-        ))}
+        {/* ── Outer nodes ── */}
+        {outerNodes.map((n, i) => {
+          const isClay = i === 0;
+          const ly = isClay ? clayLabelY : labelY(n);
+          return (
+            <g key={n.label}>
+              {/* Brand circle */}
+              <circle cx={n.cx} cy={n.cy} r={NR}
+                fill={phase >= 1 ? n.color : "rgba(255,255,255,0.04)"}
+                stroke={phase >= 1 ? n.color + "70" : "rgba(255,255,255,0.12)"}
+                strokeWidth="1.5"
+                style={{ transition: `fill .45s ease ${i * 0.1}s, stroke .45s ease ${i * 0.1}s` }}
+              />
+              {/* Letter mark — vertically centred in circle */}
+              <text x={n.cx} y={n.cy + 4.5} textAnchor="middle"
+                fontSize={n.mark === "n8" ? "9" : "11"}
+                fontFamily="Inter, sans-serif" fontWeight="800"
+                fill={phase >= 1 ? "rgba(255,255,255,0.95)" : "rgba(255,255,255,0.15)"}
+                style={{ transition: `fill .45s ease ${i * 0.1}s` }}>
+                {n.mark}
+              </text>
+              {/* Tool name — consistently positioned, same size/weight for all */}
+              <text x={n.cx} y={ly} textAnchor="middle"
+                fontSize="7.5" fontFamily="Inter, sans-serif" fontWeight="600"
+                letterSpacing="0.01em"
+                fill={phase >= 1 ? "rgba(255,255,255,0.78)" : "rgba(255,255,255,0.16)"}
+                style={{ transition: `fill .45s ease ${i * 0.1}s` }}>
+                {n.label}
+              </text>
+            </g>
+          );
+        })}
 
-        {/* Center node */}
+        {/* ── Center hub ── */}
         <circle cx={centerX} cy={centerY} r="28"
           fill={phase >= 1 ? B + "22" : "rgba(255,255,255,0.04)"}
           stroke={phase >= 1 ? B : "rgba(255,255,255,0.12)"}
           strokeWidth="1.5"
           style={{ transition: "all .5s ease" }}
         />
-        {/* Center pulse ring — phase 1 */}
         {phase === 1 && (
           <circle cx={centerX} cy={centerY} r="28" fill="none"
             stroke={B} strokeWidth="1" strokeOpacity="0.3">
-            <animate attributeName="r" values="28;40;28" dur="1.8s" repeatCount="indefinite" />
-            <animate attributeName="stroke-opacity" values="0.4;0;0.4" dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="r" values="28;42;28" dur="1.8s" repeatCount="indefinite" />
+            <animate attributeName="stroke-opacity" values="0.38;0;0.38" dur="1.8s" repeatCount="indefinite" />
           </circle>
         )}
-        <text x={centerX} y={centerY - 3} textAnchor="middle" fontSize="9" fontWeight="700"
-          fontFamily="Inter, sans-serif"
+
+        {/* Center text — perfectly centred in hub (r=28, two lines) */}
+        <text x={centerX} y={centerY - 4} textAnchor="middle"
+          fontSize="10" fontWeight="700" fontFamily="Inter, sans-serif"
           fill={phase >= 1 ? BL : "rgba(255,255,255,0.28)"}
           style={{ transition: "fill .5s ease" }}>
           Workflow
         </text>
-        <text x={centerX} y={centerY + 9} textAnchor="middle" fontSize="7"
-          fontFamily="Inter, sans-serif"
-          fill={phase === 2 ? GL + "bb" : phase >= 1 ? BL + "66" : "rgba(255,255,255,0.15)"}
+        <text x={centerX} y={centerY + 9} textAnchor="middle"
+          fontSize="7" fontFamily="Inter, sans-serif" fontWeight="500"
+          fill={phase === 2 ? GL : phase >= 1 ? BL + "88" : "rgba(255,255,255,0.18)"}
           style={{ transition: "fill .5s ease" }}>
           {phase === 2 ? "running" : phase === 1 ? "wiring" : "idle"}
         </text>
 
-        {/* "23 meetings/mo" — phase 2 */}
-        <g style={{ opacity: phase === 2 ? 1 : 0, transition: "opacity .5s ease .4s" }}>
-          <rect x="90" y="166" width="120" height="20" rx="10"
-            fill={G + "18"}
-            stroke={G + "55"}
-            strokeWidth="1"
-          />
-          <text x="150" y="179" textAnchor="middle" fontSize="8.5" fontWeight="700"
-            fontFamily="Inter, sans-serif" fill={GL}>
-            23 meetings/mo
-          </text>
-        </g>
       </svg>
 
-      <div style={{ marginTop: 6 }}>
+      {/* ── "23 meetings/mo" output badge — HTML, below SVG, above PhaseBar ── */}
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        marginTop: 10,
+        opacity: phase === 2 ? 1 : 0,
+        transition: "opacity .5s ease .4s",
+        pointerEvents: "none",
+      }}>
+        <div style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 5,
+          padding: "4px 13px",
+          borderRadius: 99,
+          background: "oklch(0.62 0.20 150 / 0.14)",
+          border: "1px solid oklch(0.62 0.20 150 / 0.40)",
+          fontSize: 8.5,
+          fontWeight: 700,
+          fontFamily: "Inter, sans-serif",
+          color: GL,
+          letterSpacing: "0.01em",
+        }}>
+          <span style={{ width: 5, height: 5, borderRadius: "50%", background: G, flexShrink: 0 }} />
+          23 meetings/mo
+        </div>
+      </div>
+
+      <div style={{ marginTop: 8 }}>
         <PhaseBar phase={phase} labels={["Idle", "Wiring", "Running"]} />
       </div>
     </div>
