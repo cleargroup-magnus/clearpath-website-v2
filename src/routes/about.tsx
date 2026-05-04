@@ -22,8 +22,8 @@ function AboutPage() {
               className="mb-5 font-display font-medium leading-[1.05] tracking-[-0.035em] text-text-base"
               style={{ fontSize: "clamp(34px, 5vw, 56px)" }}
             >
-              Kian and Magnus.{" "}
-              <span className="text-blue">Between us, we have been on every side of the table.</span>
+              Two founders that have been{" "}
+              <span className="text-blue">on every side of the table.</span>
             </h1>
             <p className="max-w-[580px] text-[17px] leading-[1.75] text-text-muted">
               Sales, recruiting, operations, development, paid media. We have done the work ourselves, and that shapes how we approach every client we take on.
