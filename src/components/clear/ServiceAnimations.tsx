@@ -47,219 +47,318 @@ export function PhaseBar({ phase, labels }: { phase: number; labels: [string, st
 /* ─────────────────────────── Web Development ────────────────────────── */
 /* wireframe → designed → live                                             */
 export function WebDevAnim({ active }: { active: boolean }) {
-  const phase = usePhase(active, 1500, 1200, 1400);
+  const phase = usePhase(active, 1500, 1300, 1600);
 
   const built = phase >= 1;
   const live  = phase === 2;
 
-  // Light-mode browser palette
-  const chrome   = "#EAEAEC";   // title bar bg
-  const pageBg   = "#FFFFFF";   // page area
-  const wire     = "rgba(0,0,0,0.09)";  // wireframe placeholder bars
+  const chrome    = "#EAEAEC";
+  const wire      = "rgba(0,0,0,0.10)";
   const wireFaint = "rgba(0,0,0,0.05)";
+
+  // Hero card dark bg (navy, like the site's dark sections)
+  const heroCardBg = built ? "#0D1829" : "rgba(0,0,0,0.05)";
 
   return (
     <div style={{ width: "100%", maxWidth: 400 }}>
-      <svg viewBox="0 0 320 210" style={{ width: "100%", display: "block" }}>
+      <svg viewBox="0 0 320 224" style={{ width: "100%", display: "block" }}>
+        <defs>
+          {/* Subtle gradient for hero section bg */}
+          <linearGradient id="wdHeroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={B} stopOpacity="0.07" />
+            <stop offset="100%" stopColor={B} stopOpacity="0.02" />
+          </linearGradient>
+          {/* Clip for hero card inner content */}
+          <clipPath id="wdHeroClip">
+            <rect x="186" y="56" width="122" height="64" rx="10" />
+          </clipPath>
+          {/* Clip for full page area */}
+          <clipPath id="wdPageClip">
+            <rect x="0" y="28" width="320" height="196" />
+          </clipPath>
+        </defs>
 
-        {/* ── Browser shell (always light) ── */}
-        <rect x="0" y="0" width="320" height="210" rx="12" fill={chrome} />
-
-        {/* Title bar */}
-        <rect x="0" y="0" width="320" height="28" rx="12" fill={chrome} />
-        {/* Kill bottom radius on title bar */}
+        {/* ── Browser shell ── */}
+        <rect x="0" y="0" width="320" height="224" rx="12" fill={chrome} />
         <rect x="0" y="16" width="320" height="12" fill={chrome} />
 
-        {/* Traffic lights: gray → colour when built */}
-        <circle cx="16" cy="14" r="4.5"
-          fill={built ? "#FF5F57" : "rgba(0,0,0,0.15)"}
-          style={{ transition: "fill .4s ease" }}
-        />
-        <circle cx="29" cy="14" r="4.5"
-          fill={built ? "#FFBD2E" : "rgba(0,0,0,0.15)"}
-          style={{ transition: "fill .4s ease .05s" }}
-        />
-        <circle cx="42" cy="14" r="4.5"
-          fill={built ? "#28C840" : "rgba(0,0,0,0.15)"}
-          style={{ transition: "fill .4s ease .10s" }}
-        />
+        {/* Traffic lights */}
+        <circle cx="16" cy="14" r="4.5" fill={built ? "#FF5F57" : "rgba(0,0,0,0.15)"} style={{ transition: "fill .4s ease" }} />
+        <circle cx="29" cy="14" r="4.5" fill={built ? "#FFBD2E" : "rgba(0,0,0,0.15)"} style={{ transition: "fill .4s ease .05s" }} />
+        <circle cx="42" cy="14" r="4.5" fill={built ? "#28C840" : "rgba(0,0,0,0.15)"} style={{ transition: "fill .4s ease .10s" }} />
 
         {/* URL bar */}
-        <rect x="58" y="7" width="160" height="14" rx="7"
+        <rect x="58" y="7" width="162" height="14" rx="7"
           fill={built ? "#FFFFFF" : "rgba(0,0,0,0.10)"}
           style={{ transition: "fill .4s ease" }}
         />
-        {/* URL text — live only */}
-        <text x="138" y="17" textAnchor="middle" fontSize="7.5"
-          fill={live ? "rgba(0,0,0,0.55)" : "transparent"}
-          fontFamily="monospace"
-          style={{ transition: "fill .4s ease .15s" }}>
+        {/* Lock icon — live */}
+        <g style={{ opacity: live ? 1 : 0, transition: "opacity .3s ease .2s" }}>
+          <rect x="66" y="11.5" width="4.5" height="3.5" rx="0.8" fill="rgba(0,0,0,0.32)" />
+          <path d="M 66.5 11.5 Q 68.2 8.8 70 11.5" fill="none" stroke="rgba(0,0,0,0.32)" strokeWidth="1" strokeLinecap="round" />
+        </g>
+        {/* URL text */}
+        <text x={live ? 83 : 139} y="17.5" textAnchor={live ? "start" : "middle"}
+          fontSize="7" fill={live ? "rgba(0,0,0,0.50)" : "transparent"}
+          fontFamily="monospace" style={{ transition: "fill .35s ease .15s" }}>
           yourclient.com
         </text>
 
         {/* LIVE badge */}
         <rect x="232" y="7" width="36" height="14" rx="7"
           fill={live ? "rgba(40,200,64,0.15)" : "transparent"}
-          stroke={live ? "#28C840" : "transparent"}
-          strokeWidth="0.8"
+          stroke={live ? "#28C840" : "transparent"} strokeWidth="0.8"
           style={{ transition: "all .35s ease .2s" }}
         />
-        <circle cx="240" cy="14" r="2.8"
-          fill={live ? "#28C840" : "transparent"}
-          style={{ transition: "fill .35s ease .25s" }}
-        />
-        <text x="252" y="17.5" textAnchor="middle" fontSize="6.5" fontWeight="700"
-          fontFamily="Inter, sans-serif"
-          fill={live ? "#28C840" : "transparent"}
+        <circle cx="240" cy="14" r="2.6" fill={live ? "#28C840" : "transparent"}
           style={{ transition: "fill .35s ease .25s" }}>
-          LIVE
-        </text>
+          {live && <animate attributeName="r" values="2.6;3.8;2.6" dur="2.2s" repeatCount="indefinite" />}
+          {live && <animate attributeName="opacity" values="1;0.35;1" dur="2.2s" repeatCount="indefinite" />}
+        </circle>
+        <text x="252" y="17.5" textAnchor="middle" fontSize="6.5" fontWeight="700"
+          fontFamily="Inter, sans-serif" fill={live ? "#28C840" : "transparent"}
+          style={{ transition: "fill .35s ease .25s" }}>LIVE</text>
 
-        {/* ── Page area: always white ── */}
-        <rect x="0" y="28" width="320" height="182" fill={pageBg} />
+        {/* ── PAGE AREA ── */}
+        <rect x="0" y="28" width="320" height="196" fill="#FFFFFF" />
 
-        {/* ── NAV BAR ── */}
-        <rect x="0" y="28" width="320" height="26"
-          fill={built ? B + "12" : "rgba(0,0,0,0.025)"}
+        {/* ── NAVBAR ── */}
+        <rect x="0" y="28" width="320" height="24"
+          fill={built ? B + "13" : "rgba(0,0,0,0.025)"}
           style={{ transition: "fill .45s ease" }}
         />
-        {/* Logo pill */}
-        <rect x="12" y="34" width="28" height="14" rx="4"
-          fill={built ? B + "30" : wire}
+        {/* Logo */}
+        <rect x="12" y="33" width="30" height="13" rx="4"
+          fill={built ? B + "35" : wire}
           style={{ transition: "fill .45s ease" }}
         />
-        <text x="26" y="43.5" textAnchor="middle" fontSize="6" fontWeight="700"
-          fontFamily="Inter, sans-serif"
-          fill={built ? B : "transparent"}
-          style={{ transition: "fill .45s ease" }}>
-          LOGO
-        </text>
+        <text x="27" y="42.5" textAnchor="middle" fontSize="6" fontWeight="800"
+          fontFamily="Inter, sans-serif" fill={built ? BL : "transparent"}
+          style={{ transition: "fill .45s ease" }}>BRAND</text>
         {/* Nav links */}
-        {[200, 225, 250].map((x, i) => (
-          <rect key={i} x={x} y="37" width="20" height="5" rx="2.5"
-            fill={built ? "rgba(0,0,0,0.18)" : wire}
+        {[196, 220, 244].map((x, i) => (
+          <rect key={i} x={x} y="36.5" width="18" height="4.5" rx="2.2"
+            fill={built ? "rgba(0,0,0,0.20)" : wire}
             style={{ transition: `fill .45s ease ${i * 0.06}s` }}
           />
         ))}
-        {/* Nav CTA */}
-        <rect x="278" y="33" width="30" height="14" rx="7"
+        {/* Nav CTA button */}
+        <rect x="270" y="31" width="38" height="13" rx="6.5"
           fill={built ? B : wire}
           style={{ transition: "fill .45s ease" }}
         />
+        <text x="289" y="40" textAnchor="middle" fontSize="5.5" fontWeight="700"
+          fontFamily="Inter, sans-serif" fill={built ? "white" : "transparent"}
+          style={{ transition: "fill .45s ease" }}>Contact</text>
 
         {/* ── HERO SECTION ── */}
-        <rect x="0" y="54" width="320" height="72"
+        <rect x="0" y="52" width="320" height="70"
+          fill={built ? "url(#wdHeroGrad)" : "rgba(0,0,0,0.015)"}
+          style={{ transition: "fill .45s ease" }}
+        />
+
+        {/* Headline — 2 lines */}
+        <rect x="16" y="62" width="136" height="10" rx="4.5"
+          fill={built ? "rgba(0,0,0,0.82)" : wire}
+          style={{ transition: "fill .45s ease" }}
+        />
+        <rect x="16" y="76" width="106" height="10" rx="4.5"
+          fill={built ? "rgba(0,0,0,0.82)" : wire}
+          style={{ transition: "fill .45s ease .04s" }}
+        />
+        {/* Subtext */}
+        <rect x="16" y="91" width="118" height="4.5" rx="2"
+          fill={built ? "rgba(0,0,0,0.36)" : wireFaint}
+          style={{ transition: "fill .45s ease" }}
+        />
+        <rect x="16" y="99" width="94" height="4.5" rx="2"
+          fill={built ? "rgba(0,0,0,0.24)" : wireFaint}
+          style={{ transition: "fill .45s ease .04s" }}
+        />
+
+        {/* CTA button */}
+        {/* Glow ring (live only — animated pulse) */}
+        <rect x="12" y="107" width="72" height="18" rx="9"
+          fill="none" stroke={B} strokeWidth="1" strokeOpacity="0"
+          style={{ transition: "stroke-opacity .3s ease" }}>
+          {live && <animate attributeName="stroke-width" values="1;10;1" dur="2s" repeatCount="indefinite" />}
+          {live && <animate attributeName="stroke-opacity" values="0.45;0;0.45" dur="2s" repeatCount="indefinite" />}
+        </rect>
+        {/* Button body */}
+        <rect x="16" y="109" width="64" height="16" rx="8"
+          fill={built ? B : wire}
+          style={{ transition: "fill .45s ease" }}
+        />
+        <text x="48" y="120" textAnchor="middle" fontSize="6" fontWeight="700"
+          fontFamily="Inter, sans-serif" fill={built ? "white" : "transparent"}
+          style={{ transition: "fill .45s ease" }}>Get started →</text>
+
+        {/* ── HERO CARD — mini website hero inside the animation ── */}
+        {/* Outer container */}
+        <rect x="186" y="56" width="122" height="64" rx="10"
+          fill={heroCardBg}
+          stroke={built ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.07)"}
+          strokeWidth="1"
+          style={{ transition: "all .5s ease" }}
+        />
+
+        {/* Clipped inner content */}
+        <g clipPath="url(#wdHeroClip)">
+          {/* Decorative gradient orb — top-right */}
+          <circle cx="290" cy="60" r="38"
+            fill={built ? B + "25" : "transparent"}
+            style={{ transition: "fill .5s ease .1s" }}
+          />
+          <circle cx="288" cy="58" r="22"
+            fill={built ? B + "18" : "transparent"}
+            style={{ transition: "fill .5s ease .15s" }}
+          />
+
+          {/* Mini nav bar */}
+          <rect x="186" y="56" width="122" height="14"
+            fill={built ? "rgba(255,255,255,0.05)" : "transparent"}
+            style={{ transition: "fill .5s ease" }}
+          />
+          {/* Mini traffic lights */}
+          {built && [0,1,2].map(k => (
+            <circle key={k} cx={193 + k * 6} cy="63" r="1.8"
+              fill={["rgba(255,95,87,0.7)","rgba(255,189,46,0.7)","rgba(40,200,64,0.7)"][k]}
+              style={{ transition: `fill .4s ease ${k * 0.05}s` }}
+            />
+          ))}
+
+          {/* Mini white headline bars */}
+          <rect x="192" y="77" width="70" height="7" rx="3"
+            fill={built ? "rgba(255,255,255,0.88)" : "rgba(255,255,255,0.08)"}
+            style={{ transition: "fill .5s ease .1s" }}
+          />
+          <rect x="192" y="88" width="52" height="5.5" rx="2.5"
+            fill={built ? "rgba(255,255,255,0.55)" : "rgba(255,255,255,0.05)"}
+            style={{ transition: "fill .5s ease .15s" }}
+          />
+
+          {/* Mini CTA in the card */}
+          <rect x="192" y="99" width="42" height="13" rx="6.5"
+            fill={built ? B : "rgba(255,255,255,0.08)"}
+            style={{ transition: "fill .5s ease .2s" }}
+          >
+            {live && <animate attributeName="opacity" values="1;0.7;1" dur="2.4s" begin="0.5s" repeatCount="indefinite" />}
+          </rect>
+          <text x="213" y="108" textAnchor="middle" fontSize="5.5" fontWeight="700"
+            fontFamily="Inter, sans-serif"
+            fill={built ? "white" : "transparent"}
+            style={{ transition: "fill .5s ease .2s" }}>Book call</text>
+
+          {/* Live: floating metric badge */}
+          <g style={{ opacity: live ? 1 : 0, transition: "opacity .4s ease .3s" }}>
+            <rect x="240" y="97" width="64" height="18" rx="9"
+              fill={G + "22"} stroke={G + "55"} strokeWidth="1"
+            />
+            <circle cx="249" cy="106" r="3.5" fill={G}>
+              <animate attributeName="opacity" values="1;0.4;1" dur="2s" repeatCount="indefinite" />
+            </circle>
+            <text x="266" y="109.5" textAnchor="middle" fontSize="6.5" fontWeight="700"
+              fontFamily="Inter, sans-serif" fill={G}>+82% leads</text>
+          </g>
+        </g>
+
+        {/* ── SECTION DIVIDER + LABEL ── */}
+        <line x1="0" y1="126" x2="320" y2="126" stroke="rgba(0,0,0,0.06)" strokeWidth="1" />
+        <rect x="116" y="129" width="88" height="5.5" rx="2.7"
+          fill={built ? B + "28" : wireFaint}
+          style={{ transition: "fill .45s ease" }}
+        />
+
+        {/* ── 3 FEATURE CARDS ── */}
+        {[0, 1, 2].map((i) => {
+          const cx = 10 + i * 102;
+          const hovered = live && i === 1;
+          return (
+            <g key={i}>
+              <rect x={cx} y="138" width="94" height="60" rx="9"
+                fill={built ? (hovered ? "#F5F8FF" : "#FAFAFA") : "#F6F6F7"}
+                stroke={hovered ? B + "55" : built ? B + "20" : "rgba(0,0,0,0.07)"}
+                strokeWidth={hovered ? "1.5" : "1"}
+                style={{ transition: `all .45s ease ${i * 0.08}s` }}
+              />
+              {/* Icon circle */}
+              <circle cx={cx + 15} cy="154" r="7.5"
+                fill={hovered ? B + "35" : built ? B + "20" : "rgba(0,0,0,0.07)"}
+                style={{ transition: `fill .45s ease ${i * 0.08}s` }}
+              />
+              {/* Icon glyph */}
+              <text x={cx + 15} y="157.5" textAnchor="middle" fontSize="7.5"
+                fontFamily="Inter, sans-serif"
+                fill={built ? BL : "transparent"}
+                style={{ transition: `fill .45s ease ${i * 0.08}s` }}>
+                {["✦","⚡","✓"][i]}
+              </text>
+              {/* Title */}
+              <rect x={cx + 28} y="150" width="54" height="6.5" rx="3"
+                fill={built ? "rgba(0,0,0,0.68)" : wire}
+                style={{ transition: `fill .45s ease ${i * 0.08}s` }}
+              />
+              {/* Body lines */}
+              <rect x={cx + 8} y="166" width="72" height="4" rx="2"
+                fill={built ? "rgba(0,0,0,0.22)" : wireFaint}
+                style={{ transition: `fill .45s ease ${i * 0.08 + 0.06}s` }}
+              />
+              <rect x={cx + 8} y="174" width="58" height="4" rx="2"
+                fill={built ? "rgba(0,0,0,0.14)" : wireFaint}
+                style={{ transition: `fill .45s ease ${i * 0.08 + 0.10}s` }}
+              />
+              <rect x={cx + 8} y="182" width="42" height="4" rx="2"
+                fill={built ? "rgba(0,0,0,0.08)" : wireFaint}
+                style={{ transition: `fill .45s ease ${i * 0.08 + 0.14}s` }}
+              />
+            </g>
+          );
+        })}
+
+        {/* ── CTA BANNER (bottom) ── */}
+        <rect x="0" y="202" width="320" height="22"
           fill={built ? B + "0c" : "rgba(0,0,0,0.02)"}
           style={{ transition: "fill .45s ease" }}
         />
-        {/* Headline */}
-        <rect x="20" y="66" width="155" height="10" rx="4"
-          fill={built ? "rgba(0,0,0,0.75)" : wire}
+        {/* Banner text */}
+        <rect x="68" y="207" width="88" height="5.5" rx="2.7"
+          fill={built ? "rgba(0,0,0,0.45)" : wireFaint}
           style={{ transition: "fill .45s ease" }}
         />
-        <rect x="20" y="80" width="110" height="7" rx="3"
-          fill={built ? "rgba(0,0,0,0.40)" : wireFaint}
+        {/* Banner CTA */}
+        <rect x="170" y="205" width="82" height="11" rx="5.5"
+          fill={built ? B : wireFaint}
           style={{ transition: "fill .45s ease" }}
         />
-        {/* Hero CTA button */}
-        <rect x="20" y="94" width="60" height="18" rx="9"
-          fill={built ? B : wire}
-          style={{ transition: "fill .45s ease" }}
+        <text x="211" y="213" textAnchor="middle" fontSize="5.5" fontWeight="700"
+          fontFamily="Inter, sans-serif" fill={built ? "white" : "transparent"}
+          style={{ transition: "fill .45s ease" }}>Book a free call →</text>
+
+        {/* ── SCROLLBAR (live) ── */}
+        <rect x="315" y="29" width="3.5" height="194" rx="1.75"
+          fill={live ? "rgba(0,0,0,0.04)" : "transparent"}
+          style={{ transition: "fill .3s ease" }}
         />
-        <text x="50" y="106" textAnchor="middle" fontSize="6.5" fontWeight="600"
-          fontFamily="Inter, sans-serif"
-          fill={built ? "#FFFFFF" : "transparent"}
-          style={{ transition: "fill .45s ease" }}>
-          Get started
-        </text>
-        {/* Hero image: mini product/dashboard mockup (right side) */}
-        {/* Container */}
-        <rect x="210" y="58" width="96" height="60" rx="8"
-          fill={built ? B + "0e" : wireFaint}
-          stroke={built ? B + "30" : "rgba(0,0,0,0.07)"}
-          strokeWidth="1"
-          style={{ transition: "all .45s ease" }}
+        <rect x="315.2" y="42" width="3" height="28" rx="1.5"
+          fill={live ? "rgba(0,0,0,0.22)" : "transparent"}
+          style={{ transition: "all .45s ease .2s" }}
         />
-        {/* Inner top bar */}
-        <rect x="210" y="58" width="96" height="13" rx="8"
-          fill={built ? B + "22" : "rgba(0,0,0,0.04)"}
-          style={{ transition: "fill .45s ease" }}
-        />
-        <rect x="210" y="64" width="96" height="7"
-          fill={built ? B + "22" : "rgba(0,0,0,0.04)"}
-          style={{ transition: "fill .45s ease" }}
-        />
-        {/* Bar chart columns — anchored to axis at y=110 */}
-        {[
-          { x: 220, h: 22, delay: 0.05 },
-          { x: 234, h: 30, delay: 0.10 },
-          { x: 248, h: 18, delay: 0.15 },
-          { x: 262, h: 34, delay: 0.20 },
-          { x: 276, h: 25, delay: 0.25 },
-        ].map((bar, bi) => {
-          const bh = live ? bar.h : built ? Math.round(bar.h * 0.55) : 3;
-          return (
-            <rect key={bi}
-              x={bar.x} y={110 - bh} width="9" height={bh} rx="2"
-              fill={live ? (bi === 3 ? G : B + "cc") : built ? B + "55" : "rgba(0,0,0,0.08)"}
-              style={{ transition: `all .5s ease ${bar.delay}s` }}
-            />
-          );
-        })}
-        {/* Mini stat badge — live only */}
-        <g style={{ opacity: live ? 1 : 0, transition: "opacity .4s ease .35s" }}>
-          <rect x="279" y="60" width="24" height="11" rx="5.5"
-            fill={G + "22"} stroke={G + "55"} strokeWidth="0.7"
+
+        {/* ── CURSOR (live — appears near CTA button) ── */}
+        <g style={{ opacity: live ? 1 : 0, transition: "opacity .5s ease .15s" }}>
+          {/* Cursor arrow shape at button position */}
+          <path d="M 36 108 L 36 120 L 39.5 117 L 42 122 L 43.5 121.4 L 41 116 L 45 116 Z"
+            fill="rgba(15,15,30,0.80)"
           />
-          <text x="291" y="67.5" textAnchor="middle" fontSize="5.5" fontWeight="700"
-            fontFamily="Inter, sans-serif" fill={G}>
-            +12%
-          </text>
+          {/* Click ripple */}
+          {live && (
+            <circle cx="36" cy="108" r="4" fill="none" stroke={B} strokeWidth="1.5" strokeOpacity="0">
+              <animate attributeName="r" values="4;14;4" dur="2.4s" begin="0.6s" repeatCount="indefinite" />
+              <animate attributeName="stroke-opacity" values="0.6;0;0.6" dur="2.4s" begin="0.6s" repeatCount="indefinite" />
+            </circle>
+          )}
         </g>
-        {/* Bottom axis line */}
-        <line x1="217" y1="110" x2="290" y2="110"
-          stroke={built ? "rgba(0,0,0,0.12)" : "rgba(0,0,0,0.04)"}
-          strokeWidth="0.75"
-          style={{ transition: "stroke .45s ease" }}
-        />
 
-        {/* ── 3-COLUMN FEATURE CARDS ── */}
-        {[0, 1, 2].map((i) => (
-          <g key={i}>
-            <rect x={12 + i * 102} y="138" width="90" height="54" rx="8"
-              fill={built ? "#FAFAFA" : "#F7F7F8"}
-              stroke={built ? B + "28" : "rgba(0,0,0,0.08)"}
-              strokeWidth="1"
-              style={{ transition: `all .45s ease ${i * 0.08}s` }}
-            />
-            {/* Card icon dot */}
-            <circle cx={24 + i * 102} cy="152" r="5"
-              fill={built ? B + "22" : "rgba(0,0,0,0.07)"}
-              style={{ transition: `fill .45s ease ${i * 0.08}s` }}
-            />
-            {/* Card title bar */}
-            <rect x={33 + i * 102} y="148" width="52" height="6" rx="3"
-              fill={built ? "rgba(0,0,0,0.65)" : wire}
-              style={{ transition: `fill .45s ease ${i * 0.08}s` }}
-            />
-            {/* Card body lines */}
-            <rect x={20 + i * 102} y="162" width="66" height="4" rx="2"
-              fill={built ? "rgba(0,0,0,0.20)" : wireFaint}
-              style={{ transition: `fill .45s ease ${i * 0.08 + 0.06}s` }}
-            />
-            <rect x={20 + i * 102} y="170" width="50" height="4" rx="2"
-              fill={built ? "rgba(0,0,0,0.13)" : wireFaint}
-              style={{ transition: `fill .45s ease ${i * 0.08 + 0.10}s` }}
-            />
-            <rect x={20 + i * 102} y="178" width="38" height="4" rx="2"
-              fill={built ? "rgba(0,0,0,0.08)" : wireFaint}
-              style={{ transition: `fill .45s ease ${i * 0.08 + 0.14}s` }}
-            />
-          </g>
-        ))}
-
-        {/* Bottom separator */}
-        <rect x="0" y="208" width="320" height="2" rx="1" fill="rgba(0,0,0,0.06)" />
       </svg>
 
       <div style={{ marginTop: 8 }}>
