@@ -60,7 +60,7 @@ function AboutPage() {
           <div className="mx-auto max-w-[720px]">
             <div className="mb-3 text-[12px] font-semibold uppercase tracking-[0.1em] text-blue">Why we started</div>
             <h2 className="mb-6 font-display text-[clamp(24px,3vw,38px)] font-medium leading-tight tracking-tight text-text-base">
-              We got tired of seeing the same gaps.
+              Different companies. Different problems. Same desire to fix them.
             </h2>
             <div className="space-y-4 text-[16px] leading-[1.8] text-text-muted">
               <p>
